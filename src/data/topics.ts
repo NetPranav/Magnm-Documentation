@@ -59,6 +59,16 @@ import { topic27Content } from './content/topic27';
 import { topic28Content } from './content/topic28';
 import { topic29Content } from './content/topic29';
 import { topic30Content } from './content/topic30';
+import { topic31Content } from './content/topic31';
+import { topic32Content } from './content/topic32';
+import { topic33Content } from './content/topic33';
+import { topic34Content } from './content/topic34';
+import { topic35Content } from './content/topic35';
+import { topic36Content } from './content/topic36';
+import { topic37Content } from './content/topic37';
+import { topic38Content } from './content/topic38';
+import { topic39Content } from './content/topic39';
+import { topic40Content } from './content/topic40';
 
 export const topicsData: TopicData[] = [
   {
@@ -354,71 +364,81 @@ export const topicsData: TopicData[] = [
   {
     "id": 31,
     "slug": "31-what-is-webrtc",
-    "title": "What is WebRTC? (Beyond just browsers)",
+    "title": "What is WebRTC?",
     "shortTitle": "What is WebRTC?",
-    "section": "WebRTC & Architecture"
+    "section": "WebRTC & Architecture",
+    ...topic31Content
   },
   {
     "id": 32,
     "slug": "32-the-signaling-phase",
-    "title": "The Signaling phase (How peers find each other)",
-    "shortTitle": "The Signaling phase",
-    "section": "WebRTC & Architecture"
+    "title": "The Signaling Phase",
+    "shortTitle": "The Signaling Phase",
+    "section": "WebRTC & Architecture",
+    ...topic32Content
   },
   {
     "id": 33,
     "slug": "33-ice-candidates-stun-and-turn-servers",
-    "title": "ICE Candidates, STUN, and TURN servers",
-    "shortTitle": "ICE Candidates, STUN, and TURN servers",
-    "section": "WebRTC & Architecture"
+    "title": "ICE Candidates, STUN and TURN servers",
+    "shortTitle": "ICE Candidates, STUN and TURN",
+    "section": "WebRTC & Architecture",
+    ...topic33Content
   },
   {
     "id": 34,
     "slug": "34-setting-up-a-data-channel-for-p2p-messaging",
     "title": "Setting up a Data Channel for P2P messaging",
-    "shortTitle": "Setting up a Data Channel for P2P messaging",
-    "section": "WebRTC & Architecture"
+    "shortTitle": "Data Channel for P2P messaging",
+    "section": "WebRTC & Architecture",
+    ...topic34Content
   },
   {
     "id": 35,
     "slug": "35-establishing-a-webrtc-connection-in-node-js",
     "title": "Establishing a WebRTC connection in Node.js",
-    "shortTitle": "Establishing a WebRTC connection in Node.js",
-    "section": "WebRTC & Architecture"
+    "shortTitle": "WebRTC connection in Node.js",
+    "section": "WebRTC & Architecture",
+    ...topic35Content
   },
   {
     "id": 36,
     "slug": "36-broadcasting-state-changes-in-real-time",
     "title": "Broadcasting state changes in real-time",
-    "shortTitle": "Broadcasting state changes in real-time",
-    "section": "WebRTC & Architecture"
+    "shortTitle": "Broadcasting state changes",
+    "section": "WebRTC & Architecture",
+    ...topic36Content
   },
   {
     "id": 37,
     "slug": "37-event-emitters",
     "title": "Event Emitters (Custom pub/sub patterns)",
     "shortTitle": "Event Emitters",
-    "section": "WebRTC & Architecture"
+    "section": "WebRTC & Architecture",
+    ...topic37Content
   },
   {
     "id": 38,
     "slug": "38-profiling-node-js-memory-leaks",
     "title": "Profiling Node.js memory leaks",
     "shortTitle": "Profiling Node.js memory leaks",
-    "section": "WebRTC & Architecture"
+    "section": "WebRTC & Architecture",
+    ...topic38Content
   },
   {
     "id": 39,
     "slug": "39-hooking-into-the-runtime",
     "title": "Hooking into the runtime (async_hooks)",
     "shortTitle": "Hooking into the runtime",
-    "section": "WebRTC & Architecture"
+    "section": "WebRTC & Architecture",
+    ...topic39Content
   },
   {
     "id": 40,
     "slug": "40-bundling-node-js-code",
     "title": "Bundling Node.js code (Deployment)",
     "shortTitle": "Bundling Node.js code",
-    "section": "WebRTC & Architecture"
+    "section": "WebRTC & Architecture",
+    ...topic40Content
   }
 ];
