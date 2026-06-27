@@ -93,5 +93,49 @@ CMD ["node", "out.js"]
 
 # The resulting Docker image will be drastically smaller and 
 # will start up much faster in AWS/Google Cloud!`
+  },
+  quiz: {
+    title: "Module VII: Advanced System Architecture Quiz",
+    questions: [
+      {
+        question: "What core design pattern powers almost every module in Node.js?",
+        options: ["The MVC Pattern", "The Singleton Pattern", "The EventEmitter Pattern", "The Factory Pattern"],
+        correctAnswerIndex: 2,
+        explanation: "Node.js relies heavily on the Observer pattern via the EventEmitter class, allowing decoupled systems to react to asynchronous events."
+      },
+      {
+        question: "What is the primary cause of a Memory Leak in a Node.js server?",
+        options: [
+          "Using too many Promises",
+          "Accidentally keeping references to objects (like storing them in a global array forever), preventing the Garbage Collector from freeing them",
+          "Writing infinite loops",
+          "Using the 'fs' module"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "V8's Garbage Collector can only clean up memory if an object is completely unreachable. If you store user sessions in an array and never delete them, they will stay in RAM until the server crashes."
+      },
+      {
+        question: "What does the `async_hooks` module allow you to do?",
+        options: [
+          "Create faster HTTP servers",
+          "Track the exact lineage and execution context of an asynchronous operation across the Event Loop",
+          "Write React hooks in Node.js",
+          "Automatically fix memory leaks"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "async_hooks (and its high-level wrapper AsyncLocalStorage) allows you to attach context (like a Request ID) to a specific execution thread, even as it bounces around the asynchronous Event Loop."
+      },
+      {
+        question: "Why would you bundle a Node.js backend using esbuild before deploying to production?",
+        options: [
+          "To make the code readable",
+          "To convert it to Python",
+          "To squash thousands of files in node_modules into a single, highly-optimized executable file, drastically reducing deployment time and Docker image size",
+          "You should never bundle backend code"
+        ],
+        correctAnswerIndex: 2,
+        explanation: "Bundling the backend removes the massive overhead of uploading a 50,000-file node_modules directory, allowing for blazing-fast container startups."
+      }
+    ]
   }
 };

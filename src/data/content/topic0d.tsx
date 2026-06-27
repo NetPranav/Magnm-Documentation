@@ -62,5 +62,44 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(3000, () => console.log('Listening on port 3000...'));`
+  },
+  quiz: {
+    title: "Module 0: The Absolute Basics Quiz",
+    questions: [
+      {
+        question: "What file is considered the 'heart' of every Node.js project?",
+        options: ["index.js", "package.json", "node_modules", ".gitignore"],
+        correctAnswerIndex: 1,
+        explanation: "package.json holds all metadata about your project including dependencies, scripts, and configuration."
+      },
+      {
+        question: "What is the key difference between CommonJS and ES Modules?",
+        options: [
+          "CommonJS uses 'import', ES Modules use 'require'",
+          "CommonJS is asynchronous, ES Modules are synchronous",
+          "CommonJS uses 'require()', ES Modules use 'import/export'",
+          "There is no difference"
+        ],
+        correctAnswerIndex: 2,
+        explanation: "CommonJS uses require() and module.exports, while ES Modules use the import/export syntax."
+      },
+      {
+        question: "Which command runs a JavaScript file using the Node.js runtime?",
+        options: ["npm start index.js", "node index.js", "run index.js", "js index.js"],
+        correctAnswerIndex: 1,
+        explanation: "You pass the file directly to the node executable: node index.js."
+      },
+      {
+        question: "In http.createServer(), what does res.end() do?",
+        options: [
+          "Crashes the server",
+          "Deletes the response",
+          "Signals that the response is complete and sends it to the client",
+          "Restarts the event loop"
+        ],
+        correctAnswerIndex: 2,
+        explanation: "res.end() tells Node.js that you are done writing the response body and it should send the finished response back to the client's browser."
+      }
+    ]
   }
 };

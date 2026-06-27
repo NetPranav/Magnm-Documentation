@@ -63,5 +63,49 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(3000);`
+server.listen(3000);`,
+  quiz: {
+    title: "Module III: Buffers & Streams Quiz",
+    questions: [
+      {
+        question: "What is a Buffer in Node.js?",
+        options: [
+          "A temporary array of strings",
+          "A fixed-size chunk of memory allocated outside the V8 heap for binary data",
+          "A tool for playing video files",
+          "A wrapper for the fs module"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "Buffers are fixed-length sequences of bytes stored outside the V8 JavaScript engine's memory, used heavily for streams and binary operations."
+      },
+      {
+        question: "What happens if you don't define an encoding (like 'utf8') when reading a file or stream?",
+        options: [
+          "Node.js throws an error",
+          "It returns raw Buffer objects",
+          "It defaults to 'utf8'",
+          "It returns hexadecimal strings"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "Without an encoding, Node.js assumes you want the raw binary data and returns Buffer objects."
+      },
+      {
+        question: "What is the primary benefit of piping streams together (`readable.pipe(writable)`)?",
+        options: [
+          "It makes the code execute synchronously",
+          "It automatically handles backpressure so you don't overflow the destination's memory",
+          "It compresses the data automatically",
+          "It encrypts the data automatically"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "Piping automatically manages 'backpressure' — if the writable stream is too slow, the readable stream will temporarily pause to prevent memory from overflowing."
+      },
+      {
+        question: "What kind of stream is a TCP Socket or a Zlib compressor?",
+        options: ["Readable Stream", "Writable Stream", "Duplex/Transform Stream", "Null Stream"],
+        correctAnswerIndex: 2,
+        explanation: "They are Duplex/Transform streams because they can both be written to (input) and read from (output)."
+      }
+    ]
+  }
 };

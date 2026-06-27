@@ -1,5 +1,6 @@
 import React from 'react';
 import SyntaxHoverCode from '@/components/SyntaxHoverCode';
+import Quiz from '@/components/Quiz';
 import Link from 'next/link';
 import { topicsData } from '@/data/topics';
 
@@ -48,7 +49,7 @@ function sync() {
 
       {/* Architectural Image (If Provided) */}
       {topic.imageUrl && (
-        <section className="mb-10 flex justify-center">
+        <section id="architecture" className="mb-10 flex justify-center">
           <div className="rounded-xl overflow-hidden border border-border bg-white shadow-sm max-w-[600px] w-full p-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
@@ -116,7 +117,7 @@ function sync() {
 
         {/* Module Capstone Mini-Project */}
         {topic.miniProject && (
-          <div className="mt-16 mb-8 p-8 rounded-2xl bg-primary/5 border border-primary/20 relative overflow-hidden">
+          <div id="capstone" className="mt-16 mb-8 p-8 rounded-2xl bg-primary/5 border border-primary/20 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-6 opacity-10">
               <svg className="w-24 h-24 text-primary" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             </div>
@@ -130,6 +131,16 @@ function sync() {
                 <SyntaxHoverCode code={topic.miniProject.code} />
               </div>
             )}
+          </div>
+        )}
+
+        {/* Interactive Quiz */}
+        {topic.quiz && (
+          <div id="quiz">
+            <Quiz 
+              title={topic.quiz.title || "Module Knowledge Check"}
+              questions={topic.quiz.questions}
+            />
           </div>
         )}
       </section>

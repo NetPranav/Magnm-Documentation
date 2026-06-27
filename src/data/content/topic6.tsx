@@ -93,5 +93,44 @@ async function connectWithTimeout(peerId) {
   }
 }`
     }
-  ]
+  ],
+  quiz: {
+    title: "Module I: Core Execution & Event Loop Quiz",
+    questions: [
+      {
+        question: "What two technologies make up the core of Node.js?",
+        options: ["React and Express", "V8 Engine and Libuv", "Chrome and Webpack", "npm and Yarn"],
+        correctAnswerIndex: 1,
+        explanation: "Node.js is built on Google's V8 JavaScript Engine (for executing JS) and Libuv (for the Event Loop, threads, and async I/O)."
+      },
+      {
+        question: "What does process.nextTick() do?",
+        options: [
+          "Pauses the Event Loop for 1 tick",
+          "Schedules a callback at the END of the current Event Loop iteration",
+          "Schedules a callback BEFORE any other pending I/O or timers in the current phase",
+          "Kills the Node.js process"
+        ],
+        correctAnswerIndex: 2,
+        explanation: "process.nextTick() fires its callback before any pending I/O events or timers, giving it higher priority than setImmediate() or setTimeout()."
+      },
+      {
+        question: "Which async pattern allows you to run multiple promises concurrently and wait for ALL of them?",
+        options: ["Promise.race()", "Promise.any()", "Promise.all()", "async/await"],
+        correctAnswerIndex: 2,
+        explanation: "Promise.all() takes an array of Promises and resolves only when ALL of them have resolved, or rejects as soon as any one of them fails."
+      },
+      {
+        question: "What triggers the V8 Garbage Collector to free memory?",
+        options: [
+          "Calling process.exit()",
+          "When a variable goes out of scope and has no remaining references",
+          "Every 10 seconds automatically",
+          "When you call gc.collect()"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "V8's Garbage Collector automatically frees memory when objects are no longer reachable — meaning no variable or closure references them anymore."
+      }
+    ]
+  }
 };

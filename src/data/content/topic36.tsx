@@ -117,5 +117,54 @@ wss.on('connection', (ws) => {
 });
 
 console.log("Whiteboard Sync Server running on port 8080");`
+  },
+  quiz: {
+    title: "Module VI: WebRTC Core Concepts Quiz",
+    questions: [
+      {
+        question: "What is the primary purpose of WebRTC?",
+        options: [
+          "To render HTML faster",
+          "To allow browsers to stream video, audio, and data directly to each other without passing through a central server",
+          "To replace REST APIs",
+          "To mine cryptocurrency"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "WebRTC establishes Peer-to-Peer (P2P) connections using UDP, allowing real-time communication directly between browsers."
+      },
+      {
+        question: "Why do we still need a central Node.js server for WebRTC?",
+        options: [
+          "To host the video files",
+          "To manage the 'Signaling Phase', allowing peers to exchange initial connection data (SDP and ICE Candidates) before they connect directly",
+          "We don't need a central server at all",
+          "To compress the audio"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "Browsers don't magically know each other's IP addresses. They must use a Signaling Server (usually WebSockets) to exchange initial connection metadata."
+      },
+      {
+        question: "What is a STUN Server used for?",
+        options: [
+          "To stun malicious hackers",
+          "To relay video traffic if P2P fails",
+          "To look at incoming connections and tell a browser what its public, internet-facing IP address is",
+          "To store user passwords"
+        ],
+        correctAnswerIndex: 2,
+        explanation: "Because most computers are behind NAT routers (like home Wi-Fi), they only know their local IP (e.g., 192.168.x.x). A STUN server echoes back the true public IP so the peer can share it as an ICE Candidate."
+      },
+      {
+        question: "What happens if a strict corporate firewall completely blocks P2P UDP connections?",
+        options: [
+          "WebRTC crashes the browser",
+          "WebRTC falls back to using a TURN Server to relay the traffic",
+          "It uses Bluetooth instead",
+          "It sends the data via email"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "A TURN server acts as an expensive relay. If direct P2P fails, both peers stream their data to the TURN server, which forwards it to the other."
+      }
+    ]
   }
 };

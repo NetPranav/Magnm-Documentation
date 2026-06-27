@@ -79,5 +79,54 @@ function gracefulShutdown(signal) {
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 // Triggered by hosting providers (like Heroku/Render) when they restart your app
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));`
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));`,
+  quiz: {
+    title: "Module IV: Multi-Processing & IPC Quiz",
+    questions: [
+      {
+        question: "What is the core difference between `spawn` and `exec`?",
+        options: [
+          "`exec` streams data, `spawn` buffers data into a single string",
+          "`spawn` returns streams for huge outputs, `exec` buffers all output into a string and can crash on massive outputs",
+          "`spawn` only works on Windows",
+          "There is no difference"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "`exec` waits for the command to finish and buffers the entire output into RAM, which crashes if the output is huge. `spawn` uses streams to handle massive data safely."
+      },
+      {
+        question: "How do two distinct Node.js child processes communicate with each other?",
+        options: [
+          "Through shared memory spaces",
+          "By writing to a temporary file",
+          "Using Inter-Process Communication (IPC) via `process.send()` and `process.on('message')`",
+          "They cannot communicate"
+        ],
+        correctAnswerIndex: 2,
+        explanation: "When you fork a process, Node.js establishes an IPC channel allowing you to pass serialized JSON messages back and forth."
+      },
+      {
+        question: "What is a major advantage of Worker Threads over Child Processes?",
+        options: [
+          "Worker Threads can share memory (using SharedArrayBuffer) avoiding JSON serialization overhead",
+          "Worker Threads run on the GPU",
+          "Worker Threads are asynchronous",
+          "Worker Threads bypass the OS kernel"
+        ],
+        correctAnswerIndex: 0,
+        explanation: "Worker Threads can actually share the same memory buffer (SharedArrayBuffer), meaning you don't have to stringify/parse huge data sets when passing them between threads."
+      },
+      {
+        question: "Why should you listen for `uncaughtException` and `SIGTERM`?",
+        options: [
+          "To keep the server running forever, ignoring all errors",
+          "To gracefully shut down connections, close databases, and exit cleanly so clients don't hang indefinitely",
+          "To restart the server automatically",
+          "To clear the V8 garbage collector"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "A graceful shutdown ensures that users who are currently downloading files or saving data are not abruptly disconnected."
+      }
+    ]
+  }
 };

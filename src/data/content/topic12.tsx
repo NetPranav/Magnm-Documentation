@@ -84,5 +84,49 @@ async function scanWorkspaceForSync(dirPath) {
 
   await Promise.all(scanPromises);
   return syncList;
-}`
+}`,
+  quiz: {
+    title: "Module II: The File System Quiz",
+    questions: [
+      {
+        question: "What is the key difference between fs.readFileSync() and fs.readFile()?",
+        options: [
+          "readFileSync is faster",
+          "readFile is synchronous, readFileSync is asynchronous",
+          "readFileSync blocks the Event Loop, readFile is non-blocking",
+          "They are identical"
+        ],
+        correctAnswerIndex: 2,
+        explanation: "readFileSync blocks the entire Event Loop until the file is fully read. readFile uses a callback and allows Node.js to continue processing other requests while waiting for the disk."
+      },
+      {
+        question: "What does the fs/promises API return?",
+        options: ["Callbacks", "Streams", "Promises that can be used with async/await", "Synchronous values"],
+        correctAnswerIndex: 2,
+        explanation: "The fs/promises API wraps all file system operations in Promises, allowing you to use clean async/await syntax instead of deeply nested callbacks."
+      },
+      {
+        question: "Why is watching files with fs.watch() important for a File Sync Engine?",
+        options: [
+          "It makes files load faster",
+          "It lets you detect file changes in real-time without polling",
+          "It compresses files automatically",
+          "It encrypts file contents"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "fs.watch() uses OS-level file system notifications to instantly detect when files are created, modified, or deleted — without wasting CPU on constant polling."
+      },
+      {
+        question: "What is the best way to read a 10GB log file in Node.js?",
+        options: [
+          "fs.readFileSync() to load it all into RAM",
+          "fs.readFile() with a callback",
+          "Use a Readable Stream (fs.createReadStream) to process it in chunks",
+          "Split it into 10 smaller files first"
+        ],
+        correctAnswerIndex: 2,
+        explanation: "Readable Streams process data in small chunks, allowing you to handle files far larger than your available RAM without crashing."
+      }
+    ]
+  }
 };

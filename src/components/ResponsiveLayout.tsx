@@ -14,6 +14,7 @@ export default function ResponsiveLayout({
   children,
 }: ResponsiveLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const touchRef = useRef({ startX: 0, startY: 0 });
 
   // Lock body scroll when sidebar is open on mobile
@@ -142,7 +143,24 @@ export default function ResponsiveLayout({
       </aside>
 
       {/* ── Main Content ── */}
-      <main className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-8 lg:px-10 py-8 lg:py-12 min-w-0 h-full relative">
+      <main 
+        className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-8 lg:px-10 py-8 lg:py-12 min-w-0 h-full relative"
+        onScroll={(e) => {
+          const target = e.target as HTMLElement;
+          const { scrollTop, scrollHeight, clientHeight } = target;
+          const maxScroll = scrollHeight - clientHeight;
+          const percentage = maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0;
+          setScrollProgress(percentage);
+        }}
+      >
+        {/* Scroll Progress Bar */}
+        <div className="fixed top-0 left-0 lg:left-64 xl:right-56 h-[3px] z-[60] bg-black/5 dark:bg-white/5 pointer-events-none" style={{ right: 0 }}>
+          <div 
+            className="h-full bg-primary transition-all duration-150 ease-out" 
+            style={{ width: `${scrollProgress}%` }}
+          />
+        </div>
+
         {children}
       </main>
 

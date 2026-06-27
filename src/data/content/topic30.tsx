@@ -118,5 +118,54 @@ const server = http.createServer(async (req, res) => {
 server.listen(3000, () => {
   console.log("Crypto Proxy running! Visit http://localhost:3000/api/bitcoin");
 });`
+  },
+  quiz: {
+    title: "Module V: Networking & WebSockets Quiz",
+    questions: [
+      {
+        question: "What is the difference between the `net` module and the `http` module?",
+        options: [
+          "`net` handles HTTP, `http` handles HTTPS",
+          "`net` provides raw TCP sockets without HTTP headers, `http` adds the HTTP protocol on top of `net`",
+          "`net` is used for frontend, `http` is used for backend",
+          "There is no difference"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "The `net` module deals with pure, raw TCP streams. The `http` module extends those streams by automatically parsing standard HTTP headers and body formats."
+      },
+      {
+        question: "What is a core advantage of WebSockets over traditional HTTP Polling?",
+        options: [
+          "WebSockets are more secure",
+          "WebSockets keep a persistent, bi-directional TCP connection open, avoiding the massive overhead of sending HTTP headers on every message",
+          "WebSockets work natively in PHP",
+          "WebSockets compress data automatically"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "HTTP polling requires opening a new connection and sending large HTTP headers every second. WebSockets open one connection and leave it open, allowing tiny messages to be sent instantly."
+      },
+      {
+        question: "How does a WebSocket connection begin?",
+        options: [
+          "With an FTP request",
+          "With a standard HTTP GET request containing an 'Upgrade' header",
+          "With a UDP ping",
+          "With a raw TCP packet"
+        ],
+        correctAnswerIndex: 1,
+        explanation: "WebSockets start their life as a standard HTTP request. If the server supports WebSockets, it responds with an HTTP 101 Switching Protocols code and upgrades the TCP socket."
+      },
+      {
+        question: "Why might you build a proxy server that connects to an external API instead of having the browser call the API directly?",
+        options: [
+          "To securely hide API keys on the backend",
+          "To implement caching and rate-limiting",
+          "To bypass CORS restrictions",
+          "All of the above"
+        ],
+        correctAnswerIndex: 3,
+        explanation: "A backend proxy server hides your secret API keys from the browser, allows you to cache responses to save money, and completely bypasses CORS restrictions."
+      }
+    ]
   }
 };

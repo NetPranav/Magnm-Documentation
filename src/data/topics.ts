@@ -23,6 +23,15 @@ export interface TopicData {
     paragraphs: React.ReactNode[];
     code: string;
   }[];
+  quiz?: {
+    title?: string;
+    questions: {
+      question: string;
+      options: string[];
+      correctAnswerIndex: number;
+      explanation: string;
+    }[];
+  };
 }
 
 import { topic0aContent } from './content/topic0a';
