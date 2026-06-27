@@ -3,10 +3,11 @@ import SyntaxHoverCode from '@/components/SyntaxHoverCode';
 import Link from 'next/link';
 import { topicsData } from '@/data/topics';
 
-export default function TopicTemplate({ id }: { id: number }) {
-  const topic = topicsData.find(t => t.id === id);
-  const nextTopic = topicsData.find(t => t.id === id + 1);
-  const prevTopic = topicsData.find(t => t.id === id - 1);
+export default function TopicTemplate({ id }: { id: number | string }) {
+  const currentIndex = topicsData.findIndex(t => t.id === id);
+  const topic = currentIndex !== -1 ? topicsData[currentIndex] : undefined;
+  const nextTopic = currentIndex !== -1 && currentIndex < topicsData.length - 1 ? topicsData[currentIndex + 1] : undefined;
+  const prevTopic = currentIndex > 0 ? topicsData[currentIndex - 1] : undefined;
 
   if (!topic) return <div>Topic not found</div>;
 
@@ -26,9 +27,20 @@ function sync() {
         <p className="text-[11px] uppercase tracking-[0.2em] text-text-muted font-medium mb-6">
           Topic {topic.id}
         </p>
-        <h1 className="font-serif text-[28px] sm:text-4xl md:text-[44px] lg:text-[52px] font-medium text-foreground mb-6 leading-[1.15] tracking-tight">
+        <h1 className="font-serif text-[28px] sm:text-4xl md:text-[44px] lg:text-[52px] font-medium text-foreground mb-4 leading-[1.15] tracking-tight">
           {topic.title}
         </h1>
+        {topic.difficulty && (
+          <div className="mb-6 flex items-center">
+            <span className={`text-[12px] px-3 py-1 rounded-full font-medium ${
+              topic.difficulty === 'Beginner' ? 'bg-green-500/10 text-green-600 dark:text-green-400' :
+              topic.difficulty === 'Intermediate' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' :
+              'bg-red-500/10 text-red-600 dark:text-red-400'
+            }`}>
+              {topic.difficulty}
+            </span>
+          </div>
+        )}
         <p className="text-[15px] text-text-secondary max-w-xl leading-[1.8] mb-4">
           {topic.description || `A simple breakdown of ${topic.shortTitle}.`}
         </p>
@@ -101,6 +113,25 @@ function sync() {
             </div>
           </React.Fragment>
         ))}
+
+        {/* Module Capstone Mini-Project */}
+        {topic.miniProject && (
+          <div className="mt-16 mb-8 p-8 rounded-2xl bg-primary/5 border border-primary/20 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-6 opacity-10">
+              <svg className="w-24 h-24 text-primary" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-2">Module Capstone Project</h2>
+            <h3 className="text-2xl font-serif font-medium text-foreground mb-4">{topic.miniProject.title}</h3>
+            <div className="text-text-secondary leading-relaxed mb-6 max-w-2xl">
+              {topic.miniProject.description}
+            </div>
+            {topic.miniProject.code && (
+              <div className="not-prose">
+                <SyntaxHoverCode code={topic.miniProject.code} />
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Navigation Footer */}

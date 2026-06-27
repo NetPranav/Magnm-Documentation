@@ -99,9 +99,18 @@ gitProcess.on('close', (code) => {
                   {sectionTopics.map((topic) => {
                     return (
                       <li key={topic.id} className="group flex items-start text-[13px] border-b border-border/60 last:border-0">
-                        <Link href={`/${topic.slug}`} className="flex items-start w-full py-3 text-text-secondary group-hover:text-foreground transition-colors duration-200">
+                        <Link href={`/${topic.slug}`} className="flex items-center w-full py-3 text-text-secondary group-hover:text-foreground transition-colors duration-200">
                           <span className="text-text-muted text-[12px] font-mono w-7 shrink-0 mt-px">{String(topic.id).padStart(2, '0')}</span>
-                          <span className="font-medium">{topic.title}</span>
+                          <span className="font-medium mr-3">{topic.title}</span>
+                          {topic.difficulty && (
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                              topic.difficulty === 'Beginner' ? 'bg-green-500/10 text-green-600 dark:text-green-400' :
+                              topic.difficulty === 'Intermediate' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' :
+                              'bg-red-500/10 text-red-600 dark:text-red-400'
+                            }`}>
+                              {topic.difficulty}
+                            </span>
+                          )}
                           <span className="ml-auto text-text-muted opacity-0 group-hover:opacity-100 transition-opacity text-[11px] pl-4">→</span>
                         </Link>
                       </li>

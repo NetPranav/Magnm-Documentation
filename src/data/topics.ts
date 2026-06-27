@@ -1,9 +1,15 @@
 export interface TopicData {
-  id: number;
+  id: number | string;
   slug: string;
   title: string;
   shortTitle: string;
   section: string;
+  difficulty?: 'Beginner' | 'Intermediate' | 'Advanced';
+  miniProject?: {
+    title: string;
+    description: React.ReactNode;
+    code?: string;
+  };
   description?: string;
   paragraphs?: React.ReactNode[];
   basicExample?: string;
@@ -19,6 +25,10 @@ export interface TopicData {
   }[];
 }
 
+import { topic0aContent } from './content/topic0a';
+import { topic0bContent } from './content/topic0b';
+import { topic0cContent } from './content/topic0c';
+import { topic0dContent } from './content/topic0d';
 import { topic1Content } from './content/topic1';
 import { topic2Content } from './content/topic2';
 import { topic3Content } from './content/topic3';
@@ -46,11 +56,44 @@ import { topic24Content } from './content/topic24';
 
 export const topicsData: TopicData[] = [
   {
+    "id": "0a",
+    "slug": "0a-what-is-package-json",
+    "title": "What is package.json?",
+    "shortTitle": "package.json & npm",
+    "section": "The Absolute Basics",
+    ...topic0aContent
+  },
+  {
+    "id": "0b",
+    "slug": "0b-commonjs-vs-es-modules",
+    "title": "CommonJS vs ES Modules",
+    "shortTitle": "CJS vs ESM",
+    "section": "The Absolute Basics",
+    ...topic0bContent
+  },
+  {
+    "id": "0c",
+    "slug": "0c-running-scripts",
+    "title": "Running Node.js Scripts",
+    "shortTitle": "Running Scripts",
+    "section": "The Absolute Basics",
+    ...topic0cContent
+  },
+  {
+    "id": "0d",
+    "slug": "0d-basic-http-server",
+    "title": "Building a Basic HTTP Server",
+    "shortTitle": "Basic HTTP Server",
+    "section": "The Absolute Basics",
+    ...topic0dContent
+  },
+  {
     "id": 1,
     "slug": "1-what-is-node-js-really",
     "title": "What is Node.js really? (The V8 Engine & Libuv)",
     "shortTitle": "What is Node.js really?",
     "section": "Core Execution & Event Loop",
+    "difficulty": "Beginner",
     ...topic1Content
   },
   {
@@ -59,6 +102,7 @@ export const topicsData: TopicData[] = [
     "title": "The Event Loop Explained (Phases and Timers)",
     "shortTitle": "The Event Loop Explained",
     "section": "Core Execution & Event Loop",
+    "difficulty": "Advanced",
     ...topic2Content
   },
   {
@@ -67,6 +111,7 @@ export const topicsData: TopicData[] = [
     "title": "process.nextTick() vs setImmediate()",
     "shortTitle": "process.nextTick",
     "section": "Core Execution & Event Loop",
+    "difficulty": "Intermediate",
     ...topic3Content
   },
   {
@@ -75,6 +120,7 @@ export const topicsData: TopicData[] = [
     "title": "Memory Management & Garbage Collection",
     "shortTitle": "Memory Management & Garbage Collection",
     "section": "Core Execution & Event Loop",
+    "difficulty": "Intermediate",
     ...topic4Content
   },
   {
@@ -83,6 +129,7 @@ export const topicsData: TopicData[] = [
     "title": "The process Object (Env vars, argv, exit codes)",
     "shortTitle": "The process Object",
     "section": "Core Execution & Event Loop",
+    "difficulty": "Beginner",
     ...topic5Content
   },
   {
@@ -91,6 +138,7 @@ export const topicsData: TopicData[] = [
     "title": "Asynchronous Patterns (Promises & Async/Await deep dive)",
     "shortTitle": "Asynchronous Patterns",
     "section": "Core Execution & Event Loop",
+    "difficulty": "Intermediate",
     ...topic6Content
   },
   {
@@ -99,6 +147,7 @@ export const topicsData: TopicData[] = [
     "title": "The path module (Cross-platform path resolution)",
     "shortTitle": "The path module",
     "section": "File System Mastery",
+    "difficulty": "Beginner",
     ...topic7Content
   },
   {
@@ -107,6 +156,7 @@ export const topicsData: TopicData[] = [
     "title": "fs.readFileSync vs fs.readFile (When to block)",
     "shortTitle": "fs.readFileSync vs fs.readFile",
     "section": "File System Mastery",
+    "difficulty": "Beginner",
     ...topic8Content
   },
   {
@@ -115,6 +165,7 @@ export const topicsData: TopicData[] = [
     "title": "The fs/promises API",
     "shortTitle": "The fs/promises API",
     "section": "File System Mastery",
+    "difficulty": "Intermediate",
     ...topic9Content
   },
   {
@@ -123,6 +174,7 @@ export const topicsData: TopicData[] = [
     "title": "Watching files and directories for changes",
     "shortTitle": "Watching files",
     "section": "File System Mastery",
+    "difficulty": "Intermediate",
     ...topic10Content
   },
   {
@@ -131,6 +183,7 @@ export const topicsData: TopicData[] = [
     "title": "Reading massive files without crashing",
     "shortTitle": "Reading massive files",
     "section": "File System Mastery",
+    "difficulty": "Advanced",
     ...topic11Content
   },
   {
@@ -139,6 +192,7 @@ export const topicsData: TopicData[] = [
     "title": "Walking directories recursively",
     "shortTitle": "Walking directories",
     "section": "File System Mastery",
+    "difficulty": "Intermediate",
     ...topic12Content
   },
   {
@@ -147,6 +201,7 @@ export const topicsData: TopicData[] = [
     "title": "What is a Buffer? (Handling binary data)",
     "shortTitle": "What is a Buffer?",
     "section": "Data Handling",
+    "difficulty": "Beginner",
     ...topic13Content
   },
   {
@@ -155,6 +210,7 @@ export const topicsData: TopicData[] = [
     "title": "Encoding and Decoding strings",
     "shortTitle": "Encoding and Decoding strings",
     "section": "Data Handling",
+    "difficulty": "Beginner",
     ...topic14Content
   },
   {
@@ -163,6 +219,7 @@ export const topicsData: TopicData[] = [
     "title": "Readable Streams",
     "shortTitle": "Readable Streams",
     "section": "Data Handling",
+    "difficulty": "Advanced",
     ...topic15Content
   },
   {
@@ -171,6 +228,7 @@ export const topicsData: TopicData[] = [
     "title": "Writable Streams",
     "shortTitle": "Writable Streams",
     "section": "Data Handling",
+    "difficulty": "Intermediate",
     ...topic16Content
   },
   {
@@ -179,6 +237,7 @@ export const topicsData: TopicData[] = [
     "title": "Transform & Duplex Streams",
     "shortTitle": "Transform & Duplex Streams",
     "section": "Data Handling",
+    "difficulty": "Advanced",
     ...topic17Content
   },
   {
@@ -187,6 +246,7 @@ export const topicsData: TopicData[] = [
     "title": "Piping streams together",
     "shortTitle": "Piping streams together",
     "section": "Data Handling",
+    "difficulty": "Intermediate",
     ...topic18Content
   },
   {
@@ -195,6 +255,7 @@ export const topicsData: TopicData[] = [
     "title": "child_process.exec",
     "shortTitle": "child_process.exec",
     "section": "Process Management",
+    "difficulty": "Beginner",
     ...topic19Content
   },
   {
@@ -203,6 +264,7 @@ export const topicsData: TopicData[] = [
     "title": "child_process.spawn",
     "shortTitle": "child_process.spawn",
     "section": "Process Management",
+    "difficulty": "Intermediate",
     ...topic20Content
   },
   {
@@ -211,6 +273,7 @@ export const topicsData: TopicData[] = [
     "title": "Inter-process communication",
     "shortTitle": "Inter-process communication",
     "section": "Process Management",
+    "difficulty": "Advanced",
     ...topic21Content
   },
   {
@@ -219,6 +282,7 @@ export const topicsData: TopicData[] = [
     "title": "The worker_threads module",
     "shortTitle": "The worker_threads module",
     "section": "Process Management",
+    "difficulty": "Advanced",
     ...topic22Content
   },
   {
@@ -227,6 +291,7 @@ export const topicsData: TopicData[] = [
     "title": "Sharing memory between threads",
     "shortTitle": "Sharing memory between threads",
     "section": "Process Management",
+    "difficulty": "Advanced",
     ...topic23Content
   },
   {
@@ -235,6 +300,7 @@ export const topicsData: TopicData[] = [
     "title": "Handling process crashes gracefully",
     "shortTitle": "Handling process crashes",
     "section": "Process Management",
+    "difficulty": "Intermediate",
     ...topic24Content
   },
   {
