@@ -18,6 +18,12 @@ import { topic3Content } from './content/topic3';
 import { topic4Content } from './content/topic4';
 import { topic5Content } from './content/topic5';
 import { topic6Content } from './content/topic6';
+import { topic7Content } from './content/topic7';
+import { topic8Content } from './content/topic8';
+import { topic9Content } from './content/topic9';
+import { topic10Content } from './content/topic10';
+import { topic11Content } from './content/topic11';
+import { topic12Content } from './content/topic12';
 
 export const topicsData: TopicData[] = [
   {
@@ -73,42 +79,48 @@ export const topicsData: TopicData[] = [
     "slug": "7-the-path-module",
     "title": "The path module (Cross-platform path resolution)",
     "shortTitle": "The path module",
-    "section": "File System Mastery"
+    "section": "File System Mastery",
+    ...topic7Content
   },
   {
     "id": 8,
     "slug": "8-fs-readfilesync-vs-fs-readfile",
     "title": "fs.readFileSync vs fs.readFile (When to block)",
     "shortTitle": "fs.readFileSync vs fs.readFile",
-    "section": "File System Mastery"
+    "section": "File System Mastery",
+    ...topic8Content
   },
   {
     "id": 9,
     "slug": "9-the-fs-promises-api",
     "title": "The fs/promises API",
     "shortTitle": "The fs/promises API",
-    "section": "File System Mastery"
+    "section": "File System Mastery",
+    ...topic9Content
   },
   {
     "id": 10,
     "slug": "10-watching-files-and-directories-for-changes",
     "title": "Watching files and directories for changes",
-    "shortTitle": "Watching files and directories for changes",
-    "section": "File System Mastery"
+    "shortTitle": "Watching files",
+    "section": "File System Mastery",
+    ...topic10Content
   },
   {
     "id": 11,
     "slug": "11-reading-massive-files-without-crashing",
     "title": "Reading massive files without crashing",
-    "shortTitle": "Reading massive files without crashing",
-    "section": "File System Mastery"
+    "shortTitle": "Reading massive files",
+    "section": "File System Mastery",
+    ...topic11Content
   },
   {
     "id": 12,
     "slug": "12-walking-directories-recursively",
     "title": "Walking directories recursively",
-    "shortTitle": "Walking directories recursively",
-    "section": "File System Mastery"
+    "shortTitle": "Walking directories",
+    "section": "File System Mastery",
+    ...topic12Content
   },
   {
     "id": 13,
