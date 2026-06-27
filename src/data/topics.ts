@@ -10,6 +10,13 @@ export interface TopicData {
   advancedExample?: string;
   advancedTitle?: string;
   advancedParagraphs?: React.ReactNode[];
+  imageUrl?: string;
+  imageAlt?: string;
+  extraExamples?: {
+    title: string;
+    paragraphs: React.ReactNode[];
+    code: string;
+  }[];
 }
 
 import { topic1Content } from './content/topic1';
@@ -24,6 +31,8 @@ import { topic9Content } from './content/topic9';
 import { topic10Content } from './content/topic10';
 import { topic11Content } from './content/topic11';
 import { topic12Content } from './content/topic12';
+import { topic13Content } from './content/topic13';
+import { topic14Content } from './content/topic14';
 
 export const topicsData: TopicData[] = [
   {
@@ -127,14 +136,16 @@ export const topicsData: TopicData[] = [
     "slug": "13-what-is-a-buffer",
     "title": "What is a Buffer? (Handling binary data)",
     "shortTitle": "What is a Buffer?",
-    "section": "Data Handling"
+    "section": "Data Handling",
+    ...topic13Content
   },
   {
     "id": 14,
     "slug": "14-encoding-and-decoding-strings",
     "title": "Encoding and Decoding strings",
     "shortTitle": "Encoding and Decoding strings",
-    "section": "Data Handling"
+    "section": "Data Handling",
+    ...topic14Content
   },
   {
     "id": 15,

@@ -2,12 +2,14 @@ import React from 'react';
 
 export const topic11Content = {
   description: "An introduction to Node.js Streams for massive data processing.",
+  imageUrl: "/assets/images/streams-v2.png",
+  imageAlt: "Node.js Streams vs RAM Usage Diagram",
   paragraphs: [
     <p key="1">
       Up until now, we have used <code>fs.readFile</code> to load files. When you use <code>fs.readFile</code>, Node.js takes the entire file from the hard drive and loads it directly into RAM (the V8 Heap).
     </p>,
     <p key="2">
-      If you read a 10MB JSON file, it takes 10MB of RAM. But what if a user asks your application to read a 10GB video file? V8 only allocates about 1.5GB of memory by default. Attempting to load the 10GB file into memory all at once will instantly crash your application with a <code>JavaScript heap out of memory</code> error.
+      If you read a 10MB JSON file, it takes 10MB of RAM. But what if a user asks your application to read a 10GB video file? V8 only allocates about 1.5GB of memory by default. Attempting to load the 10GB file into memory all at once will instantly crash your application with a fatal <code>JavaScript heap out of memory</code> error.
     </p>,
     <p key="3">
       The solution is <strong>Streams</strong>. Instead of loading the entire file at once, a Stream reads the file in tiny chunks (e.g., 64KB at a time), processes that chunk, and then immediately deletes it from RAM to make room for the next chunk.
@@ -67,5 +69,35 @@ function syncMassiveFileToPeer(filePath, webRtcChannel) {
   stream.on('error', (err) => {
     console.error('Failed to stream file:', err);
   });
-}`
+}`,
+  extraExamples: [
+    {
+      title: "Edge Case: Piping & Transform Streams",
+      paragraphs: [
+        <p key="1">
+          Streams get incredibly powerful when you connect them together using <code>.pipe()</code>. For example, what if we wanted to compress (ZIP) that 4GB Docker image before saving a backup to our hard drive? We can pipe a Readable Stream directly into a Compression Stream, and then pipe that directly into a Writable Stream! Data flows continuously without ever filling up RAM.
+        </p>
+      ],
+      code: `const fs = require('fs');
+const zlib = require('zlib'); // Built-in compression
+
+// 1. Read the raw 4GB file
+const readStream = fs.createReadStream('docker-image.tar');
+
+// 2. Compress the data on the fly (Transform Stream)
+const gzipStream = zlib.createGzip();
+
+// 3. Write the compressed data to a new file
+const writeStream = fs.createWriteStream('docker-image.tar.gz');
+
+// Connect them all together!
+// Data flows: Disk -> Node (Compress) -> Disk
+readStream
+  .pipe(gzipStream)
+  .pipe(writeStream)
+  .on('finish', () => {
+    console.log('Successfully compressed 4GB file using minimal RAM!');
+  });`
+    }
+  ]
 };

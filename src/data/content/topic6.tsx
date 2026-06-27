@@ -1,81 +1,97 @@
 import React from 'react';
 
 export const topic6Content = {
-  description: "Mastering Callback Hell, Promises, and deep Async/Await execution order.",
+  description: "Mastering Promises, Async/Await, and executing tasks in parallel.",
+  imageUrl: "/assets/images/async-patterns-v2.png",
+  imageAlt: "Sequential vs Parallel Execution Diagram",
   paragraphs: [
     <p key="1">
-      Because Node.js operates on a single thread (using the Event Loop), almost all operations that involve I/O (like reading a file or making a network request) are <strong>asynchronous</strong>. 
+      When dealing with asynchronous tasks (like reading files or making network requests), the way you structure your code drastically impacts the performance of your Node.js application.
     </p>,
     <p key="2">
-      If they were synchronous, the entire application would freeze and wait for the file to finish reading before executing the next line of code. To handle this, Node.js originally used <strong>Callbacks</strong>—functions passed as arguments to be executed when the operation finished.
+      In older versions of Node.js, asynchronous operations relied on <strong>Callbacks</strong>. While fast, this led to "Callback Hell"—deeply nested code that was impossible to read or debug. Today, we use <strong>Promises</strong> and the <code>async/await</code> syntax. A Promise is simply an object that represents the eventual completion (or failure) of an asynchronous operation.
     </p>,
     <p key="3">
-      However, callbacks quickly led to the infamous "Callback Hell" (a pyramid of doom). Modern Node.js relies almost entirely on <strong>Promises</strong> and the syntactic sugar of <strong>Async/Await</strong> to make asynchronous code look and behave like synchronous code.
+      The most critical mistake developers make with <code>async/await</code> is accidentally forcing tasks to run sequentially. If you need to read 3 independent files, waiting for File 1 to finish before starting File 2 wastes time. Instead, you should start all 3 reads simultaneously and wait for them to finish in <strong>Parallel</strong>.
     </p>
   ],
-  basicExample: `// 1. The Old Way: Callback Hell
-fs.readFile('config.json', (err, data) => {
-  if (err) throw err;
-  db.connect(data.dbUrl, (err, connection) => {
-    if (err) throw err;
-    connection.query('SELECT * FROM users', (err, users) => {
-      // Pyramid of Doom...
-    });
-  });
-});
+  basicExample: `// ❌ SEQUENTIAL (Slow)
+async function getSlowData() {
+  const user = await fetchUser();         // Takes 1 second
+  const posts = await fetchPosts();       // Takes 1 second
+  return { user, posts };                 // Total: 2 seconds
+}
 
-// 2. The Modern Way: Async / Await
-async function fetchUsers() {
-  try {
-    // Execution pauses here, yielding control back to the Event Loop
-    const data = await fs.promises.readFile('config.json');
-    const connection = await db.connect(data.dbUrl);
-    const users = await connection.query('SELECT * FROM users');
-    return users;
-  } catch (err) {
-    console.error('Something failed!', err);
-  }
+// ✅ PARALLEL (Fast)
+async function getFastData() {
+  // We start both promises at the exact same time
+  const [user, posts] = await Promise.all([
+    fetchUser(),  // Takes 1 second
+    fetchPosts()  // Takes 1 second
+  ]);
+  return { user, posts };                 // Total: 1 second!
 }`,
-  advancedTitle: "Real-World: Parallel Execution & Promise.all",
+  advancedTitle: "Real-World: Parallel Sync Verification",
   advancedParagraphs: [
     <p key="1">
       Let's apply this to our <strong>Real-time P2P File Sync Engine</strong>.
     </p>,
     <p key="2">
-      When our engine starts up, it needs to scan the entire workspace directory and calculate the cryptographic hash of every single file so it can determine what needs to be synced with the peer. 
+      When our engine boots up, it needs to verify the cryptographic hashes of every file in the workspace to see if anything changed while it was offline. If a user has 1,000 files, hashing them sequentially one-by-one would take minutes.
     </p>,
     <p key="3">
-      If a workspace has 1,000 files, hashing them one by one using <code>await</code> in a standard <code>for</code> loop would take forever. The Event Loop would sit completely idle waiting for file 1 to finish before even starting file 2. To maximize performance, we fire off all 1,000 read operations simultaneously and use <code>Promise.all()</code> to wait for them to finish as a collective group.
+      By using <code>Promise.all()</code>, we can fire off 1,000 hashing operations simultaneously. Libuv will distribute the actual file reading across its internal C++ thread pool (which defaults to 4 threads), cutting the boot time down to just a few seconds!
     </p>
   ],
-  advancedExample: `// Inside our File Sync Engine...
+  advancedExample: `const crypto = require('crypto');
+const fs = require('fs/promises');
 
-async function hashWorkspaceFiles(filePaths) {
-  console.log(\`Hashing \${filePaths.length} files...\`);
+// Inside our File Sync Engine...
+async function verifyWorkspaceHashes(files) {
+  console.log(\`Verifying \${files.length} files in parallel...\`);
 
-  // BAD: Sequential execution (Very Slow)
-  // for (const path of filePaths) {
-  //   await hashFile(path); // Event loop waits here completely
-  // }
-
-  // GOOD: Parallel execution (Extremely Fast)
-  // We map the array of strings into an array of pending Promises
-  const hashingPromises = filePaths.map(path => {
-    // We don't 'await' here! We just return the Promise.
-    // This tells Node.js to fire off 1000 tasks to Libuv instantly.
-    return hashFile(path); 
+  // We map the array of files into an array of Promises
+  const hashingPromises = files.map(async (file) => {
+    const data = await fs.readFile(file.path);
+    const hash = crypto.createHash('sha256').update(data).digest('hex');
+    
+    return { path: file.path, hash: hash };
   });
 
-  // Now, we wait for all 1,000 tasks to finish simultaneously.
-  // The Event Loop is free to handle other things while Libuv works.
+  // We wait for ALL 1,000 promises to finish simultaneously!
+  const results = await Promise.all(hashingPromises);
+  
+  console.log("Workspace verified instantly!");
+  return results;
+}`,
+  extraExamples: [
+    {
+      title: "Edge Case: Promise.race for Timeouts",
+      paragraphs: [
+        <p key="1">
+          Sometimes you don't want to wait for all promises to finish. What if you're trying to connect to a WebRTC peer, but they might be offline? You don't want your engine to hang forever. You can use <code>Promise.race()</code> to pit your connection attempt against a 5-second timer. Whichever promise finishes first "wins" the race!
+        </p>
+      ],
+      code: `// Inside our File Sync Engine...
+
+async function connectWithTimeout(peerId) {
+  // Promise 1: The actual connection attempt
+  const connectionTask = connectToPeer(peerId);
+
+  // Promise 2: A timer that rejects after 5 seconds
+  const timeoutTask = new Promise((resolve, reject) => {
+    setTimeout(() => reject(new Error('Connection Timed Out!')), 5000);
+  });
+
   try {
-    const allHashes = await Promise.all(hashingPromises);
-    console.log('All files hashed successfully!');
-    return allHashes;
-  } catch (err) {
-    // If even ONE file fails to hash, the entire Promise.all rejects.
-    console.error('Sync failed: Could not read a file.', err);
-    throw err; 
+    // If connectionTask takes longer than 5s, timeoutTask wins and throws!
+    const peer = await Promise.race([connectionTask, timeoutTask]);
+    console.log(\`Successfully connected to \${peerId}\`);
+  } catch (error) {
+    console.error(error.message);
+    // Fallback: Try a different peer or show offline mode UI
   }
 }`
+    }
+  ]
 };

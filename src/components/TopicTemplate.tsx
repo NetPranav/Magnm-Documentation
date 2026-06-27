@@ -34,6 +34,20 @@ function sync() {
         </p>
       </section>
 
+      {/* Architectural Image (If Provided) */}
+      {topic.imageUrl && (
+        <section className="mb-10 flex justify-center">
+          <div className="rounded-xl overflow-hidden border border-border bg-white shadow-sm max-w-[600px] w-full p-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={topic.imageUrl} 
+              alt={topic.imageAlt || "Architecture diagram"} 
+              className="w-full h-auto object-contain rounded-lg"
+            />
+          </div>
+        </section>
+      )}
+
       {/* Content Section */}
       <section id="content" className="py-8 prose prose-slate max-w-none prose-p:text-[15px] prose-p:text-text-secondary prose-p:leading-[1.8] prose-headings:font-serif prose-headings:font-medium prose-headings:text-foreground prose-a:text-primary-dark prose-a:no-underline hover:prose-a:underline">
         
@@ -72,6 +86,21 @@ function sync() {
         <div className="not-prose my-6">
           <SyntaxHoverCode code={advancedExample} />
         </div>
+
+        {/* Extra Examples (For Massive Core Topics) */}
+        {topic.extraExamples && topic.extraExamples.map((example, index) => (
+          <React.Fragment key={`extra-${index}`}>
+            <h3 id={`extra-example-${index}`} className="text-2xl mt-12 mb-4">
+              {example.title}
+            </h3>
+            {example.paragraphs.map((p, i) => (
+              <React.Fragment key={`extra-p-${i}`}>{p}</React.Fragment>
+            ))}
+            <div className="not-prose my-6">
+              <SyntaxHoverCode code={example.code} />
+            </div>
+          </React.Fragment>
+        ))}
       </section>
 
       {/* Navigation Footer */}
