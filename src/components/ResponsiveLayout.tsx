@@ -130,10 +130,11 @@ export default function ResponsiveLayout({
         className={`
           fixed lg:sticky top-14 left-0 bottom-0
           w-[280px] lg:w-64
+          h-[calc(100vh-3.5rem)]
           bg-sidebar border-r border-border
           z-50 lg:z-auto
           transform transition-transform duration-300 ease-out
-          overflow-y-auto
+          overflow-y-auto overscroll-contain
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
@@ -146,7 +147,7 @@ export default function ResponsiveLayout({
       </main>
 
       {/* ── Right Sidebar — desktop only ── */}
-      <aside className="hidden xl:block w-56 h-[calc(100vh-3.5rem)] overflow-y-auto border-l border-border bg-sidebar px-5 py-8 sticky top-14 shrink-0">
+      <aside className="hidden xl:block w-56 h-[calc(100vh-3.5rem)] overflow-y-auto overscroll-contain border-l border-border bg-sidebar px-5 py-8 sticky top-14 shrink-0">
         {rightSidebar}
       </aside>
     </div>
