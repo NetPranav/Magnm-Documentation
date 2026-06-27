@@ -55,9 +55,9 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
-      <body className="min-h-full flex flex-col">
+      <body className="h-screen overflow-hidden flex flex-col">
         {/* Top Navbar */}
-        <header className="h-14 border-b border-border bg-background sticky top-0 z-50">
+        <header className="h-14 shrink-0 border-b border-border bg-background z-50">
           <div className="max-w-[1400px] w-full mx-auto flex items-center h-full px-4 sm:px-6">
             {/* Brand — shifted right on mobile for hamburger space */}
             <div className="flex items-center ml-10 lg:ml-0 shrink-0">

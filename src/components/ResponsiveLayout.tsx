@@ -84,7 +84,7 @@ export default function ResponsiveLayout({
   }, [handleTouchStart, handleTouchEnd]);
 
   return (
-    <div className="flex flex-1 max-w-[1400px] w-full mx-auto relative">
+    <div className="flex flex-1 max-w-[1400px] w-full mx-auto relative overflow-hidden">
       {/* ── Mobile Hamburger ── */}
       <button
         onClick={() => setSidebarOpen((v) => !v)}
@@ -128,13 +128,13 @@ export default function ResponsiveLayout({
       {/* ── Left Sidebar ── */}
       <aside
         className={`
-          fixed lg:sticky top-14 left-0 bottom-0
+          absolute lg:static top-0 left-0 bottom-0
           w-[280px] lg:w-64
-          h-[calc(100vh-3.5rem)]
+          h-full
           bg-sidebar border-r border-border
           z-50 lg:z-auto
           transform transition-transform duration-300 ease-out
-          overflow-y-auto overscroll-contain
+          overflow-y-auto overscroll-contain shrink-0
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
@@ -142,12 +142,12 @@ export default function ResponsiveLayout({
       </aside>
 
       {/* ── Main Content ── */}
-      <main className="flex-1 px-5 sm:px-8 lg:px-10 py-8 lg:py-12 min-w-0">
+      <main className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-8 lg:px-10 py-8 lg:py-12 min-w-0 h-full relative">
         {children}
       </main>
 
       {/* ── Right Sidebar — desktop only ── */}
-      <aside className="hidden xl:block w-56 h-[calc(100vh-3.5rem)] overflow-y-auto overscroll-contain border-l border-border bg-sidebar px-5 py-8 sticky top-14 shrink-0">
+      <aside className="hidden xl:block w-56 h-full overflow-y-auto overscroll-contain border-l border-border bg-sidebar px-5 py-8 shrink-0">
         {rightSidebar}
       </aside>
     </div>
