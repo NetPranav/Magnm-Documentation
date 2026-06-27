@@ -33,6 +33,11 @@ import { topic11Content } from './content/topic11';
 import { topic12Content } from './content/topic12';
 import { topic13Content } from './content/topic13';
 import { topic14Content } from './content/topic14';
+import { topic15Content } from './content/topic15';
+import { topic16Content } from './content/topic16';
+import { topic17Content } from './content/topic17';
+import { topic18Content } from './content/topic18';
+import { topic19Content } from './content/topic19';
 
 export const topicsData: TopicData[] = [
   {
@@ -150,37 +155,42 @@ export const topicsData: TopicData[] = [
   {
     "id": 15,
     "slug": "15-readable-streams",
-    "title": "Readable Streams (Consuming data)",
+    "title": "Readable Streams",
     "shortTitle": "Readable Streams",
-    "section": "Data Handling"
+    "section": "Data Handling",
+    ...topic15Content
   },
   {
     "id": 16,
     "slug": "16-writable-streams",
-    "title": "Writable Streams (Writing massive logs/files)",
+    "title": "Writable Streams",
     "shortTitle": "Writable Streams",
-    "section": "Data Handling"
+    "section": "Data Handling",
+    ...topic16Content
   },
   {
     "id": 17,
     "slug": "17-transform-duplex-streams",
     "title": "Transform & Duplex Streams",
     "shortTitle": "Transform & Duplex Streams",
-    "section": "Data Handling"
+    "section": "Data Handling",
+    ...topic17Content
   },
   {
     "id": 18,
     "slug": "18-piping-streams-together",
-    "title": "Piping Streams together (read.pipe(write))",
-    "shortTitle": "Piping Streams together",
-    "section": "Data Handling"
+    "title": "Piping streams together",
+    "shortTitle": "Piping streams together",
+    "section": "Data Handling",
+    ...topic18Content
   },
   {
     "id": 19,
     "slug": "19-child-process-exec",
-    "title": "child_process.exec() (Running shell commands)",
+    "title": "child_process.exec",
     "shortTitle": "child_process.exec",
-    "section": "Multi-Processing & Concurrency"
+    "section": "Process Management",
+    ...topic19Content
   },
   {
     "id": 20,
