@@ -38,6 +38,11 @@ import { topic16Content } from './content/topic16';
 import { topic17Content } from './content/topic17';
 import { topic18Content } from './content/topic18';
 import { topic19Content } from './content/topic19';
+import { topic20Content } from './content/topic20';
+import { topic21Content } from './content/topic21';
+import { topic22Content } from './content/topic22';
+import { topic23Content } from './content/topic23';
+import { topic24Content } from './content/topic24';
 
 export const topicsData: TopicData[] = [
   {
@@ -195,37 +200,42 @@ export const topicsData: TopicData[] = [
   {
     "id": 20,
     "slug": "20-child-process-spawn",
-    "title": "child_process.spawn() (Long-running tasks)",
+    "title": "child_process.spawn",
     "shortTitle": "child_process.spawn",
-    "section": "Multi-Processing & Concurrency"
+    "section": "Process Management",
+    ...topic20Content
   },
   {
     "id": 21,
     "slug": "21-inter-process-communication",
-    "title": "Inter-Process Communication (IPC)",
-    "shortTitle": "Inter-Process Communication",
-    "section": "Multi-Processing & Concurrency"
+    "title": "Inter-process communication",
+    "shortTitle": "Inter-process communication",
+    "section": "Process Management",
+    ...topic21Content
   },
   {
     "id": 22,
     "slug": "22-the-worker-threads-module",
     "title": "The worker_threads module",
     "shortTitle": "The worker_threads module",
-    "section": "Multi-Processing & Concurrency"
+    "section": "Process Management",
+    ...topic22Content
   },
   {
     "id": 23,
     "slug": "23-sharing-memory-between-threads",
-    "title": "Sharing memory between threads (SharedArrayBuffer)",
+    "title": "Sharing memory between threads",
     "shortTitle": "Sharing memory between threads",
-    "section": "Multi-Processing & Concurrency"
+    "section": "Process Management",
+    ...topic23Content
   },
   {
     "id": 24,
     "slug": "24-handling-process-crashes-gracefully",
     "title": "Handling process crashes gracefully",
-    "shortTitle": "Handling process crashes gracefully",
-    "section": "Multi-Processing & Concurrency"
+    "shortTitle": "Handling process crashes",
+    "section": "Process Management",
+    ...topic24Content
   },
   {
     "id": 25,
