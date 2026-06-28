@@ -300,7 +300,7 @@ You must provide the instructions for this stage of the project in pure JSON wit
         prompt = f"Topic: {topic_title}\nDescription: {topic_desc}\nProvide the project challenge instructions."
         
         headers = {
-            "Authorization": f"Bearer {settings.NVIDIA_API_KEY}",
+            "Authorization": f"Bearer {settings.NVIDIA_NIM_API_KEY}",
             "Content-Type": "application/json"
         }
         
