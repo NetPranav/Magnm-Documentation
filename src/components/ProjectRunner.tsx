@@ -127,11 +127,14 @@ export default function ProjectRunner() {
       if (!res.ok) throw new Error(data.error || 'Failed to get hint');
       
       if (data.hint) {
-        setHintText(data.hint);
+        // Format the hint as a multi-line Javascript comment
+        const commentHint = `/*\n * AI HINT:\n * ${data.hint.replace(/\n/g, '\n * ')}\n */\n\n`;
+        setCode(prevCode => commentHint + prevCode);
       }
     } catch (err: any) {
       console.error(err);
-      setHintText("I'm sorry, I couldn't generate a hint right now.");
+      // Fallback hint in code if it fails
+      setCode(prevCode => `// Failed to generate hint. Please try again.\n\n` + prevCode);
     } finally {
       setIsHinting(false);
     }
@@ -214,17 +217,6 @@ export default function ProjectRunner() {
           </div>
         )}
 
-        {hintText && (
-          <div className="mt-4 p-4 rounded-lg border bg-blue-500/10 border-blue-500/20 text-blue-800 dark:text-blue-300 animate-fade-in-up">
-            <div className="font-bold mb-2 flex items-center text-blue-600 dark:text-blue-400">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              AI Hint
-            </div>
-            <div className="prose prose-sm dark:prose-invert">
-              <TypewriterText text={hintText} />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Right Panel: Monaco Editor */}
