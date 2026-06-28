@@ -186,7 +186,7 @@ Respond in pure JSON with EXACTLY this schema:
         prompt = f"Topic: {topic_slug}\nUser Code Submission:\n```javascript\n{user_code}\n```\nEvaluate this submission."
         
         headers = {
-            "Authorization": f"Bearer {settings.NVIDIA_API_KEY}",
+            "Authorization": f"Bearer {settings.NVIDIA_NIM_API_KEY}",
             "Content-Type": "application/json"
         }
         
@@ -243,7 +243,7 @@ Respond in pure JSON with EXACTLY this schema:
         prompt = f"Topic: {topic_slug}\nCurrent Code:\n```javascript\n{user_code}\n```\nProvide a hint."
         
         headers = {
-            "Authorization": f"Bearer {settings.NVIDIA_API_KEY}",
+            "Authorization": f"Bearer {settings.NVIDIA_NIM_API_KEY}",
             "Content-Type": "application/json"
         }
         
