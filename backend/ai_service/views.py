@@ -79,12 +79,12 @@ The schema must be EXACTLY:
             # For this prototype, we'll assume the LLM correctly returned JSON as a string
             import json
             try:
-                # Sometimes LLMs wrap JSON in ```json ... ```
+                # Robustly extract JSON object by finding first { and last }
                 clean_content = content.strip()
-                if clean_content.startswith("```json"):
-                    clean_content = clean_content[7:]
-                if clean_content.endswith("```"):
-                    clean_content = clean_content[:-3]
+                start = clean_content.find('{')
+                end = clean_content.rfind('}')
+                if start != -1 and end != -1:
+                    clean_content = clean_content[start:end+1]
                     
                 parsed_json = json.loads(clean_content)
                 return Response(parsed_json)
