@@ -43,7 +43,8 @@ export function AIProvider({ children }: { children: ReactNode }) {
       }
     } else {
       // Fetch from Django backend when authenticated
-      fetch(`http://127.0.0.1:8000/api/ai/load/?email=${session.user.email}`)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://magnm-documentation.onrender.com';
+      fetch(`${apiUrl}/api/ai/load/?email=${session.user.email}`)
         .then(res => res.json())
         .then(data => {
           if (!data.error) {
@@ -58,7 +59,8 @@ export function AIProvider({ children }: { children: ReactNode }) {
     if (!session?.user) {
       localStorage.setItem('ai_injections', JSON.stringify(updatedInjections));
     } else {
-      fetch(`http://127.0.0.1:8000/api/ai/save/`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://magnm-documentation.onrender.com';
+      fetch(`${apiUrl}/api/ai/save/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -82,7 +82,8 @@ export default function CommandPalette() {
         paragraphCount: topic.paragraphs ? topic.paragraphs.length : 0
       };
 
-      const res = await fetch('http://127.0.0.1:8000/api/ai/generate/', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://magnm-documentation.onrender.com';
+      const res = await fetch(`${apiUrl}/api/ai/generate/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: query, topicContext }),
