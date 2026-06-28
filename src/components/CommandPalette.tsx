@@ -16,6 +16,15 @@ export default function CommandPalette() {
   const pathname = usePathname();
   const topic = topicsData.find(t => '/' + t.slug === pathname);
 
+  const extractText = (node: any): string => {
+    if (typeof node === 'string' || typeof node === 'number') return String(node);
+    if (Array.isArray(node)) return node.map(extractText).join('');
+    if (node && node.props && node.props.children) {
+      return extractText(node.props.children);
+    }
+    return '';
+  };
+
   // Close on Escape, handle global Cmd+K
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -80,8 +89,8 @@ export default function CommandPalette() {
         title: topic.title,
         description: topic.description,
         paragraphCount: topic.paragraphs ? topic.paragraphs.length : 0,
-        paragraphs: topic.paragraphs || [],
-        advancedParagraphs: topic.advancedParagraphs || [],
+        paragraphs: (topic.paragraphs || []).map(extractText),
+        advancedParagraphs: (topic.advancedParagraphs || []).map(extractText),
         basicExample: topic.basicExample || `// Placeholder Basic Example\nconsole.log("This is a placeholder for ${topic.shortTitle}");`,
         advancedExample: topic.advancedExample || `// Placeholder Real-World Example\n// Our File Sync Engine...\nfunction sync() {\n  console.log("Syncing ${topic.shortTitle}...");\n}`
       };
