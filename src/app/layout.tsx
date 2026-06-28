@@ -5,6 +5,9 @@ import "./globals.css";
 import LeftSidebar from "@/components/LeftSidebar";
 import RightSidebar from "@/components/RightSidebar";
 import ResponsiveLayout from "@/components/ResponsiveLayout";
+import { Providers } from "@/components/Providers";
+import CommandPalette from "@/components/CommandPalette";
+import SearchTrigger from "@/components/SearchTrigger";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,8 +59,9 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className="h-screen overflow-hidden flex flex-col">
-        {/* Top Navbar */}
-        <header className="h-14 shrink-0 border-b border-border bg-background z-50">
+        <Providers>
+          {/* Top Navbar */}
+          <header className="h-14 shrink-0 border-b border-border bg-background z-50">
           <div className="max-w-[1400px] w-full mx-auto flex items-center h-full px-4 sm:px-6">
             {/* Brand — shifted right on mobile for hamburger space */}
             <div className="flex items-center ml-10 lg:ml-0 shrink-0">
@@ -88,23 +92,19 @@ export default function RootLayout({
 
             {/* Search hint — hidden on small screens */}
             <div className="ml-auto hidden md:flex items-center shrink-0">
-              <div className="flex items-center px-3 py-1.5 rounded-lg border border-border text-text-muted text-xs hover:border-primary/40 transition-colors cursor-pointer">
-                <svg className="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                Search docs...
-                <span className="ml-3 text-[10px] border border-border rounded px-1.5 py-0.5">⌘K</span>
-              </div>
+              <SearchTrigger />
             </div>
           </div>
-        </header>
+          </header>
 
-        <ResponsiveLayout
-          leftSidebar={<LeftSidebar />}
-          rightSidebar={<RightSidebar />}
-        >
-          {children}
-        </ResponsiveLayout>
+          <CommandPalette />
+          <ResponsiveLayout
+            leftSidebar={<LeftSidebar />}
+            rightSidebar={<RightSidebar />}
+          >
+            {children}
+          </ResponsiveLayout>
+        </Providers>
       </body>
     </html>
   );

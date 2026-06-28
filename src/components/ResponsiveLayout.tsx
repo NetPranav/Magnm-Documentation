@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useAI } from '@/context/AIContext';
 
 interface ResponsiveLayoutProps {
   leftSidebar: React.ReactNode;
@@ -13,6 +14,7 @@ export default function ResponsiveLayout({
   rightSidebar,
   children,
 }: ResponsiveLayoutProps) {
+  const { isSearchOpen } = useAI();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const touchRef = useRef({ startX: 0, startY: 0 });
@@ -144,7 +146,7 @@ export default function ResponsiveLayout({
 
       {/* ── Main Content ── */}
       <main 
-        className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-8 lg:px-10 py-8 lg:py-12 min-w-0 h-full relative"
+        className={`flex-1 ${isSearchOpen ? 'overflow-hidden' : 'overflow-y-auto'} overscroll-contain px-5 sm:px-8 lg:px-10 py-8 lg:py-12 min-w-0 h-full relative`}
         onScroll={(e) => {
           const target = e.target as HTMLElement;
           const { scrollTop, scrollHeight, clientHeight } = target;
