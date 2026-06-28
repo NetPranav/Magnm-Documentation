@@ -62,7 +62,7 @@ The schema must be EXACTLY:
         }
         
         payload = {
-            "model": "meta/llama-3.1-70b-instruct",
+            "model": "meta/llama-3.1-8b-instruct",
             "messages": [
                 {"role": "system", "content": system_instruction},
                 {"role": "user", "content": prompt}
@@ -74,7 +74,7 @@ The schema must be EXACTLY:
         try:
             # Update the URL with the correct NVIDIA NIM endpoint
             nim_url = "https://integrate.api.nvidia.com/v1/chat/completions"
-            resp = requests.post(nim_url, headers=headers, json=payload, timeout=30)
+            resp = requests.post(nim_url, headers=headers, json=payload, timeout=25)
             resp.raise_for_status()
             
             data = resp.json()
