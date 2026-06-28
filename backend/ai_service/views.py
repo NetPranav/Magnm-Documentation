@@ -74,7 +74,7 @@ The schema must be EXACTLY:
         try:
             # Update the URL with the correct NVIDIA NIM endpoint
             nim_url = "https://integrate.api.nvidia.com/v1/chat/completions"
-            resp = requests.post(nim_url, headers=headers, json=payload)
+            resp = requests.post(nim_url, headers=headers, json=payload, timeout=30)
             resp.raise_for_status()
             
             data = resp.json()
