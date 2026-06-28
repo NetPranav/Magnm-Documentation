@@ -295,6 +295,7 @@ You must provide the instructions for this stage of the project in pure JSON wit
 {
   "theory": "2-3 sentences explaining the core theory of this topic.",
   "connection": "2-3 sentences explaining EXACTLY how this topic will be used in our Real-time Text Editor project.",
+  "syntax_explanation": "1-2 sentences explaining the specific syntax or API that the user needs to use.",
   "code_example": "A specific code snippet (written as a single string, escaping newlines as \\n and quotes as \\\") showing an example of how to implement the theory in practice.",
   "challenge": "1-2 sentences giving the user a specific, implementable coding challenge to write in their editor right now to progress the project based on the example."
 }

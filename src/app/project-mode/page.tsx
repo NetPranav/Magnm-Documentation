@@ -1,12 +1,21 @@
 import ProjectRunner from '@/components/ProjectRunner';
 import { Metadata } from 'next';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: 'Project Mode | Magnum Documentation',
   description: 'Learn Node.js by building a real-time collaborative text editor.',
 };
 
-export default function ProjectModePage() {
+export default async function ProjectModePage() {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    redirect('/');
+  }
+
   return (
     <div className="h-full w-full flex flex-col p-6 animate-fade-in">
       <div className="mb-6">

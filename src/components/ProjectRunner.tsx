@@ -10,11 +10,12 @@ export default function ProjectRunner() {
   const { completedProjectTopics, markTopicComplete, projectCodebase, updateProjectCode } = useAI();
   
   const [currentTopic, setCurrentTopic] = useState<any>(null);
-  const [challengeInstructions, setChallengeInstructions] = useState<{theory: string, connection: string, code_example?: string, challenge: string} | null>(null);
+  const [challengeInstructions, setChallengeInstructions] = useState<{theory: string, connection: string, syntax_explanation?: string, code_example?: string, challenge: string} | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [code, setCode] = useState<string>('// Write your collaborative editor code here\n\n');
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [feedback, setFeedback] = useState<{ success: boolean; text: string } | null>(null);
+  const [activeFile, setActiveFile] = useState<string>('server.js');
   const [isHinting, setIsHinting] = useState(false);
   const [hintText, setHintText] = useState<string>('');
 
@@ -28,9 +29,10 @@ export default function ProjectRunner() {
       setFeedback(null);
       setHintText('');
       // Load previous code if they wrote some, or default
-      setCode(projectCodebase['index.js'] || '// Write your collaborative editor code here\n\n');
+      const defaultFileCode = projectCodebase[activeFile] || '// Write your collaborative editor code here\n\n';
+      setCode(defaultFileCode);
     }
-  }, [completedProjectTopics, currentTopic, projectCodebase]);
+  }, [completedProjectTopics, currentTopic, projectCodebase, activeFile]);
 
   // Fetch challenge instructions when topic changes
   useEffect(() => {
@@ -76,7 +78,7 @@ export default function ProjectRunner() {
     setFeedback(null);
     
     // Auto-save code state locally to avoid losing it
-    updateProjectCode('index.js', code);
+    updateProjectCode(activeFile, code);
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://magnm-documentation.onrender.com';
@@ -190,6 +192,19 @@ export default function ProjectRunner() {
                 </div>
               </div>
 
+              {/* Syntax Explanation Section */}
+              {challengeInstructions.syntax_explanation && (
+                <div>
+                  <h3 className="text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2 flex items-center">
+                    <svg className="w-3.5 h-3.5 mr-1.5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    Syntax Explanation
+                  </h3>
+                  <div className="text-[13px] text-text-secondary leading-relaxed bg-background/50 border border-border rounded-lg p-3">
+                    <TypewriterText text={challengeInstructions.syntax_explanation} speed={10} delay={1200} />
+                  </div>
+                </div>
+              )}
+
               {/* Code Example Section */}
               {challengeInstructions.code_example && (
                 <div>
@@ -234,19 +249,38 @@ export default function ProjectRunner() {
 
       {/* Right Panel: Monaco Editor */}
       <div className="w-full lg:w-3/5 flex flex-col bg-[#1e1e1e]">
-        <div className="h-10 bg-[#2d2d2d] border-b border-black/50 flex items-center px-4">
-          <div className="flex space-x-2 mr-4">
+        <div className="h-10 bg-[#2d2d2d] border-b border-black/50 flex items-center px-4 overflow-x-auto custom-scrollbar">
+          <div className="flex space-x-2 mr-6 shrink-0">
             <div className="w-3 h-3 rounded-full bg-red-500"></div>
             <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
             <div className="w-3 h-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-xs text-gray-400 font-mono">index.js - Collaborative Editor</span>
+          
+          <div className="flex space-x-1 shrink-0">
+            {['server.js', 'package.json', 'client.js', 'webrtc.js', 'utils.js'].map(filename => (
+              <button
+                key={filename}
+                onClick={() => {
+                  updateProjectCode(activeFile, code);
+                  setActiveFile(filename);
+                  setCode(projectCodebase[filename] || (filename === 'package.json' ? '{\n  \n}' : '// Write code here\n\n'));
+                }}
+                className={`px-3 py-1.5 text-xs font-mono rounded-t-md transition-colors ${
+                  activeFile === filename 
+                    ? 'bg-[#1e1e1e] text-blue-400 border-t border-blue-500/50' 
+                    : 'text-gray-400 hover:bg-[#3d3d3d] hover:text-gray-200'
+                }`}
+              >
+                {filename}
+              </button>
+            ))}
+          </div>
         </div>
         
         <div className="flex-1 relative">
           <Editor
             height="100%"
-            defaultLanguage="javascript"
+            language={activeFile.endsWith('.json') ? 'json' : 'javascript'}
             theme="vs-dark"
             value={code}
             onChange={handleEditorChange}
