@@ -221,3 +221,60 @@ Respond in pure JSON with EXACTLY this schema:
                 return Response({"error": "Failed to parse evaluation result.", "raw": content}, status=500)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+class ProjectHintView(APIView):
+    def post(self, request):
+        topic_slug = request.data.get('topic_slug')
+        user_code = request.data.get('user_code')
+        
+        if not topic_slug or not user_code:
+            return Response({"error": "topic_slug and user_code are required"}, status=400)
+            
+        system_instruction = """You are an expert, encouraging programming mentor helping a student build a real-time collaborative text editor.
+The student is stuck on their current task and asked for a hint.
+DO NOT write the code for them.
+Instead, briefly explain the concept they are missing, suggest what they should look at in their code, or explain why their current approach might be failing.
+Keep your response under 3 sentences. Be friendly and concise.
+Respond in pure JSON with EXACTLY this schema:
+{
+  "hint": "Your friendly hint string"
+}
+"""
+        prompt = f"Topic: {topic_slug}\nCurrent Code:\n```javascript\n{user_code}\n```\nProvide a hint."
+        
+        headers = {
+            "Authorization": f"Bearer {settings.NVIDIA_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": "meta/llama-3.1-8b-instruct",
+            "messages": [
+                {"role": "system", "content": system_instruction},
+                {"role": "user", "content": prompt}
+            ],
+            "max_tokens": 300,
+            "temperature": 0.5
+        }
+        
+        try:
+            nim_url = "https://integrate.api.nvidia.com/v1/chat/completions"
+            resp = requests.post(nim_url, headers=headers, json=payload, timeout=25)
+            resp.raise_for_status()
+            
+            data = resp.json()
+            content = data["choices"][0]["message"]["content"]
+            
+            import json_repair
+            try:
+                clean_content = content.strip()
+                start = clean_content.find('{')
+                end = clean_content.rfind('}')
+                if start != -1 and end != -1:
+                    clean_content = clean_content[start:end+1]
+                parsed = json_repair.loads(clean_content)
+                return Response(parsed)
+            except Exception as e:
+                return Response({"error": "Failed to parse hint result.", "raw": content}, status=500)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)

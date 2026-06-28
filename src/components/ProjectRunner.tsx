@@ -15,6 +15,8 @@ export default function ProjectRunner() {
   const [code, setCode] = useState<string>('// Write your collaborative editor code here\n\n');
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [feedback, setFeedback] = useState<{ success: boolean; text: string } | null>(null);
+  const [isHinting, setIsHinting] = useState(false);
+  const [hintText, setHintText] = useState<string>('');
 
   // Determine current topic based on progress
   useEffect(() => {
@@ -23,6 +25,7 @@ export default function ProjectRunner() {
       setCurrentTopic(nextTopic);
       setChallengeInstructions('');
       setFeedback(null);
+      setHintText('');
       // Load previous code if they wrote some, or default
       setCode(projectCodebase['index.js'] || '// Write your collaborative editor code here\n\n');
     }
@@ -107,6 +110,36 @@ Finally, give the user a specific, implementable coding challenge (1-2 sentences
     }
   };
 
+  const handleGetHint = async () => {
+    if (!currentTopic || !code.trim()) return;
+    setIsHinting(true);
+    setHintText('');
+    
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://magnm-documentation.onrender.com';
+      const res = await fetch(`${apiUrl}/api/ai/project/hint/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          topic_slug: currentTopic.slug, 
+          user_code: code 
+        }),
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || 'Failed to get hint');
+      
+      if (data.hint) {
+        setHintText(data.hint);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setHintText("I'm sorry, I couldn't generate a hint right now.");
+    } finally {
+      setIsHinting(false);
+    }
+  };
+
   if (!currentTopic) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-10 text-center">
@@ -150,6 +183,18 @@ Finally, give the user a specific, implementable coding challenge (1-2 sentences
             <p className="text-sm">{feedback.text}</p>
           </div>
         )}
+
+        {hintText && (
+          <div className="mt-4 p-4 rounded-lg border bg-blue-500/10 border-blue-500/20 text-blue-800 dark:text-blue-300 animate-fade-in-up">
+            <div className="font-bold mb-2 flex items-center text-blue-600 dark:text-blue-400">
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              AI Hint
+            </div>
+            <div className="prose prose-sm dark:prose-invert">
+              <TypewriterText text={hintText} />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Right Panel: Monaco Editor */}
@@ -179,10 +224,22 @@ Finally, give the user a specific, implementable coding challenge (1-2 sentences
           />
         </div>
 
-        <div className="p-4 bg-[#2d2d2d] border-t border-black/50 flex justify-end">
+        <div className="p-4 bg-[#2d2d2d] border-t border-black/50 flex justify-end space-x-3">
+          <button
+            onClick={handleGetHint}
+            disabled={isEvaluating || isGenerating || isHinting || !code.trim()}
+            className="px-4 py-2 bg-[#3d3d3d] hover:bg-[#4d4d4d] text-gray-200 text-sm font-medium rounded-lg shadow-sm transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isHinting ? (
+              <><svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Thinking...</>
+            ) : (
+              <><svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg> Ask for a Hint</>
+            )}
+          </button>
+          
           <button
             onClick={handleSubmit}
-            disabled={isEvaluating || isGenerating || !code.trim()}
+            disabled={isEvaluating || isGenerating || isHinting || !code.trim()}
             className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg shadow-sm transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isEvaluating ? (
