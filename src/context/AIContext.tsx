@@ -12,6 +12,7 @@ export interface AIInjection {
   replacements?: {
     target: string;
     text: string;
+    explanation?: string;
   }[];
   newSections?: {
     title: string;

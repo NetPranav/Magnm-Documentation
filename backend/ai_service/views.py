@@ -47,8 +47,8 @@ The schema must be EXACTLY:
     {{ "paragraphIndex": 0, "text": "Deep dive explanation related to paragraph index." }}
   ],
   "replacements": [
-    {{ "target": "basicExample", "text": "New code block markdown or complex example to replace the basic example." }},
-    {{ "target": "advancedExample", "text": "New code block markdown to replace the advanced example." }}
+    {{ "target": "basicExample", "text": "New code block markdown to replace the basic example.", "explanation": "Detailed explanation to inject directly below the replaced code." }},
+    {{ "target": "advancedExample", "text": "New code block markdown to replace the advanced example.", "explanation": "Detailed explanation to inject directly below the replaced code." }}
   ],
   "newSections": [
     {{ "title": "Line-by-line explanation", "content": "Markdown content explaining the code." }}

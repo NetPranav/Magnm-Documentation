@@ -120,11 +120,11 @@ function sync() {
                 .filter(exp => exp.paragraphIndex === i)
                 .map((exp, j) => (
                 <div key={`exp-${i}-${j}`} className="not-prose my-6 font-medium">
-                  <div className="flex items-center text-primary dark:text-primary-light mb-1 uppercase tracking-wider text-[10px] font-bold opacity-80">
+                  <div className="flex items-center text-primary dark:text-primary-light mb-1 uppercase tracking-wider text-[11px] font-bold">
                     <svg className="w-3.5 h-3.5 mr-1.5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                     AI Added Content
                   </div>
-                  <TypewriterText text={exp.text} className="text-[15px] text-primary-dark dark:text-primary-light italic" />
+                  <TypewriterText text={exp.text} className="text-[16px] text-primary-dark dark:text-primary font-bold italic" />
                 </div>
               ))}
             </React.Fragment>
@@ -150,11 +150,22 @@ function sync() {
             const replacement = history.flatMap(inj => inj.replacements || []).reverse().find(r => r.target === 'basicExample');
             if (replacement) {
               return (
-                <div className="relative">
-                  <div className="absolute -top-3 -right-3 z-10 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md animate-bounce">
-                    AI Replaced
+                <div className="relative flex flex-col gap-4">
+                  <div className="relative">
+                    <div className="absolute -top-3 -right-3 z-10 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md animate-bounce">
+                      AI Replaced
+                    </div>
+                    <SyntaxHoverCode code={replacement.text.replace(/```[a-z]*\n?/g, '').replace(/```/g, '')} />
                   </div>
-                  <SyntaxHoverCode code={replacement.text.replace(/```[a-z]*\n?/g, '').replace(/```/g, '')} />
+                  {replacement.explanation && (
+                    <div className="bg-primary/5 border-l-4 border-primary p-4 rounded-r-lg mt-2 font-medium">
+                      <div className="flex items-center text-primary mb-1 uppercase tracking-wider text-[11px] font-bold">
+                        <svg className="w-3.5 h-3.5 mr-1.5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        Code Explanation
+                      </div>
+                      <TypewriterText text={replacement.explanation} className="text-[15px] text-primary-dark dark:text-primary font-bold italic" />
+                    </div>
+                  )}
                 </div>
               );
             }
@@ -177,11 +188,22 @@ function sync() {
             const replacement = history.flatMap(inj => inj.replacements || []).reverse().find(r => r.target === 'advancedExample');
             if (replacement) {
               return (
-                <div className="relative">
-                  <div className="absolute -top-3 -right-3 z-10 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md animate-bounce">
-                    AI Replaced
+                <div className="relative flex flex-col gap-4">
+                  <div className="relative">
+                    <div className="absolute -top-3 -right-3 z-10 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md animate-bounce">
+                      AI Replaced
+                    </div>
+                    <SyntaxHoverCode code={replacement.text.replace(/```[a-z]*\n?/g, '').replace(/```/g, '')} />
                   </div>
-                  <SyntaxHoverCode code={replacement.text.replace(/```[a-z]*\n?/g, '').replace(/```/g, '')} />
+                  {replacement.explanation && (
+                    <div className="bg-primary/5 border-l-4 border-primary p-4 rounded-r-lg mt-2 font-medium">
+                      <div className="flex items-center text-primary mb-1 uppercase tracking-wider text-[11px] font-bold">
+                        <svg className="w-3.5 h-3.5 mr-1.5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        Code Explanation
+                      </div>
+                      <TypewriterText text={replacement.explanation} className="text-[15px] text-primary-dark dark:text-primary font-bold italic" />
+                    </div>
+                  )}
                 </div>
               );
             }
