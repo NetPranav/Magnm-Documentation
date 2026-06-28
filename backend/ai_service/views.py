@@ -36,6 +36,10 @@ Advanced Example Code:
 {topic_context.get('advancedExample', '')}
 
 Your goal is to modify and explain concepts to the user by returning a strict JSON object (NO markdown wrapping, just raw JSON).
+CRITICAL JSON RULES:
+1. You MUST escape all newlines inside string values as \\n. DO NOT output literal newlines inside JSON strings (e.g. inside code block replacements).
+2. You MUST escape all quotes inside string values as \\".
+3. DO NOT wrap the output in markdown block quotes like ```json.
 The schema must be EXACTLY:
 {{
   "summary": "A high-level explanation placed at the top of the page.",
@@ -78,6 +82,7 @@ The schema must be EXACTLY:
             
             # For this prototype, we'll assume the LLM correctly returned JSON as a string
             import json
+            import json_repair
             try:
                 # Robustly extract JSON object by finding first { and last }
                 clean_content = content.strip()
@@ -86,10 +91,10 @@ The schema must be EXACTLY:
                 if start != -1 and end != -1:
                     clean_content = clean_content[start:end+1]
                     
-                parsed_json = json.loads(clean_content)
+                parsed_json = json_repair.loads(clean_content)
                 return Response(parsed_json)
-            except json.JSONDecodeError:
-                return Response({"error": "Failed to parse LLM output as JSON.", "raw": content}, status=500)
+            except Exception as parse_err:
+                return Response({"error": "Failed to parse LLM output as JSON.", "raw": content, "details": str(parse_err)}, status=500)
                 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
