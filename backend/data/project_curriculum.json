@@ -3,10 +3,10 @@
     "target_file": "package.json",
     "theory": "The package.json file is a manifest file used to describe the metadata of a Node.js project, including its dependencies, scripts, and other settings. It's a crucial file for managing project dependencies and running scripts. npm (Node Package Manager) is a package manager for Node.js that allows users to easily install and manage dependencies.",
     "connection": "In our Real-Time Collaborative Text Editor project, we'll use package.json to declare our project's dependencies, including the WebRTC library we'll use for real-time communication. We'll also use npm to install and manage these dependencies.",
-    "syntax_explanation": "In package.json, we'll use the 'dependencies' field to specify our project's dependencies, and the 'scripts' field to define custom scripts for our project.",
-    "code_example": "Here's an example of how to declare a dependency in package.json:\n\n\"dependencies\": {\n  \"webrtc\": \"^1.0.0\"\n}\n",
-    "challenge": "Add the WebRTC library as a dependency in your package.json file and define a custom script to start the server.",
-    "golden_snippet": "\"dependencies\": {\n  \"webrtc\": \"^1.0.0\"\n},\n\"scripts\": {\n  \"start\": \"node server.js\"\n}"
+    "syntax_explanation": "In package.json, we'll use the 'dependencies' field to specify our project's dependencies, and the 'scripts' field to define custom scripts for our project. A script is just a key-value pair where the value is the terminal command to run.",
+    "code_example": "Here's an example of how to declare a dependency and a script in package.json:\n\n\"dependencies\": {\n  \"webrtc\": \"^1.0.0\"\n},\n\"scripts\": {\n  \"start\": \"node server.js\"\n}",
+    "challenge": "Add the WebRTC library as a dependency in your package.json file and define a 'start' script to run 'node server.js'.",
+    "golden_snippet": "{\n  \"dependencies\": {\n    \"webrtc\": \"^1.0.0\"\n  },\n  \"scripts\": {\n    \"start\": \"node server.js\"\n  }\n}"
   },
   "0b-commonjs-vs-es-modules": {
     "target_file": "server.js",
