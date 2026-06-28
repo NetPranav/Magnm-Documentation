@@ -176,10 +176,11 @@ class ProjectEvaluateView(APIView):
             
         system_instruction = """You are an expert programming instructor evaluating a student's code submission for a real-time collaborative text editor project.
 You will be given the topic they are currently learning, and their code submission.
-Evaluate if their code correctly implements the concepts required for this topic.
+Evaluate if their code correctly implements the core concepts required for this topic.
+BE LENIENT: As long as the core logic is mostly correct and they demonstrate an understanding of the concept, pass them (success: true). It does not need to be perfectly efficient or complete.
 Respond in pure JSON with EXACTLY this schema:
 {
-  "success": boolean (true if the code is acceptable, false if it is wrong or missing key concepts),
+  "success": boolean (true if the code is acceptable/close enough, false only if it is completely wrong or missing key concepts),
   "feedback": "String explaining what they did well, or what they did wrong. Keep it encouraging and specific."
 }
 """
