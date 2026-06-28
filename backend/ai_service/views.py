@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 import requests
+import json
+import os
 from .models import UserInjection, ProjectProgress
 
 class GenerateAIView(APIView):
