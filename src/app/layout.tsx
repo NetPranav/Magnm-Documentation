@@ -73,8 +73,8 @@ export default function RootLayout({
               </span>
             </div>
 
-            {/* Language Tabs — scrollable on mobile */}
-            <nav className="ml-3 sm:ml-12 flex items-center h-full space-x-1 overflow-x-auto no-scrollbar">
+            {/* Language Tabs — hidden on mobile */}
+            <nav className="ml-3 sm:ml-12 hidden md:flex items-center h-full space-x-1 overflow-x-auto no-scrollbar">
               {languages.map((lang) => (
                 <a
                   key={lang.name}
@@ -90,8 +90,8 @@ export default function RootLayout({
               ))}
             </nav>
 
-            {/* Search hint — hidden on small screens */}
-            <div className="ml-auto hidden md:flex items-center shrink-0">
+            {/* Search trigger — visible everywhere now */}
+            <div className="ml-auto flex items-center shrink-0 max-w-[50%] sm:max-w-none">
               <SearchTrigger />
             </div>
           </div>

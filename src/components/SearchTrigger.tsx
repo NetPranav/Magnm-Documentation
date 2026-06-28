@@ -17,7 +17,7 @@ export default function SearchTrigger() {
   return (
     <div className="relative flex flex-col items-end">
       <div 
-        className="flex items-center px-3 py-1.5 rounded-lg border border-border text-text-muted text-xs hover:border-primary/40 hover:text-foreground transition-colors cursor-pointer bg-background shadow-sm hover:shadow-md"
+        className="flex items-center px-2.5 sm:px-4 py-1.5 sm:py-2 w-full sm:w-80 rounded-xl border border-border text-text-muted text-xs sm:text-sm hover:border-primary/40 hover:text-foreground transition-colors cursor-pointer bg-background shadow-sm hover:shadow-md"
         onClick={() => setSearchOpen(true)}
       >
         <svg className="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

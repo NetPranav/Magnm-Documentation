@@ -137,7 +137,7 @@ export default function ResponsiveLayout({
           bg-sidebar border-r border-border
           z-50 lg:z-auto
           transform transition-transform duration-300 ease-out
-          overflow-y-auto overscroll-contain shrink-0
+          overflow-hidden shrink-0 flex flex-col
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
