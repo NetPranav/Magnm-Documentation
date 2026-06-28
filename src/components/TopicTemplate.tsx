@@ -361,6 +361,8 @@ function sync() {
             />
           </div>
         )}
+        </>
+        )}
       </section>
 
       {/* Navigation Footer */}
