@@ -172,19 +172,44 @@ class ProjectEvaluateView(APIView):
         user_code = request.data.get('user_code')
         
         if not topic_slug or not user_code:
-            return Response({"error": "topic_slug and user_code are required"}, status=400)
+            return Response({"error": "Topic slug and user code are required."}, status=400)
             
-        system_instruction = """You are an expert programming instructor evaluating a student's code submission for a real-time collaborative text editor project.
-You will be given the topic they are currently learning, and their code submission.
-Evaluate if their code correctly implements the core concepts required for this topic.
-BE LENIENT: As long as the core logic is mostly correct and they demonstrate an understanding of the concept, pass them (success: true). It does not need to be perfectly efficient or complete.
-Respond in pure JSON with EXACTLY this schema:
-{
-  "success": boolean (true if the code is acceptable/close enough, false only if it is completely wrong or missing key concepts),
-  "feedback": "String explaining what they did well, or what they did wrong. Keep it encouraging and specific."
-}
+        curriculum_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'project_curriculum.json')
+        golden_snippet = ""
+        target_file = "the current file"
+        try:
+            if os.path.exists(curriculum_path):
+                with open(curriculum_path, 'r') as f:
+                    curriculum = json.load(f)
+                    if topic_slug in curriculum:
+                        golden_snippet = curriculum[topic_slug].get("golden_snippet", "")
+                        target_file = curriculum[topic_slug].get("target_file", "the current file")
+        except Exception:
+            pass
+            
+        system_instruction = f"""You are an automated code evaluator grading a student's project code.
+The user was asked to write code for '{target_file}' covering the topic '{topic_slug}'.
+
+Here is the GOLDEN STANDARD CODE for this challenge:
+```javascript
+{golden_snippet}
+```
+
+The user submitted this code:
+```javascript
+{user_code}
+```
+
+Compare the user's code to the golden standard.
+If the user's code logically implements what the golden standard implements, return success: true. 
+Be lenient on exact syntax/formatting, but strict on the logical requirements (e.g. if the golden code requires an import, they must have it).
+
+You MUST return a pure JSON object:
+{{
+  "success": boolean,
+  "feedback": "1-2 sentences of encouraging feedback. If they failed, briefly explain what is missing based on the golden standard."
+}}
 """
-        prompt = f"Topic: {topic_slug}\nUser Code Submission:\n```javascript\n{user_code}\n```\nEvaluate this submission."
         
         headers = {
             "Authorization": f"Bearer {settings.NVIDIA_NIM_API_KEY}",
@@ -195,7 +220,7 @@ Respond in pure JSON with EXACTLY this schema:
             "model": "meta/llama-3.1-8b-instruct",
             "messages": [
                 {"role": "system", "content": system_instruction},
-                {"role": "user", "content": prompt}
+                {"role": "user", "content": f"Evaluate the submitted code."}
             ],
             "max_tokens": 512,
             "temperature": 0.3
@@ -217,6 +242,11 @@ Respond in pure JSON with EXACTLY this schema:
                 if start != -1 and end != -1:
                     clean_content = clean_content[start:end+1]
                 parsed = json_repair.loads(clean_content)
+                
+                if parsed.get("success") and golden_snippet:
+                    parsed["golden_snippet"] = golden_snippet
+                    parsed["target_file"] = target_file
+                    
                 return Response(parsed)
             except Exception as e:
                 return Response({"error": "Failed to parse evaluation result.", "raw": content}, status=500)
@@ -283,58 +313,26 @@ Respond in pure JSON with EXACTLY this schema:
 class ProjectChallengeView(APIView):
     def post(self, request):
         topic_slug = request.data.get('topic_slug')
-        topic_title = request.data.get('topic_title')
-        topic_desc = request.data.get('topic_description')
         
         if not topic_slug:
-            return Response({"error": "topic_slug is required"}, status=400)
+            return Response({"error": "Topic slug is required."}, status=400)
             
-        system_instruction = """You are an expert programming instructor guiding a student through building a Real-time Collaborative Text Editor in Node.js.
-The student is currently learning a specific topic.
-You must provide the instructions for this stage of the project in pure JSON with EXACTLY this schema:
-{
-  "theory": "2-3 sentences explaining the core theory of this topic.",
-  "connection": "2-3 sentences explaining EXACTLY how this topic will be used in our Real-time Text Editor project.",
-  "syntax_explanation": "1-2 sentences explaining the specific syntax or API that the user needs to use.",
-  "code_example": "A specific code snippet (written as a single string, escaping newlines as \\n and quotes as \\\") showing an example of how to implement the theory in practice.",
-  "challenge": "1-2 sentences giving the user a specific, implementable coding challenge to write in their editor right now to progress the project based on the example."
-}
-"""
-        prompt = f"Topic: {topic_title}\nDescription: {topic_desc}\nProvide the project challenge instructions."
-        
-        headers = {
-            "Authorization": f"Bearer {settings.NVIDIA_NIM_API_KEY}",
-            "Content-Type": "application/json"
-        }
-        
-        payload = {
-            "model": "meta/llama-3.1-8b-instruct",
-            "messages": [
-                {"role": "system", "content": system_instruction},
-                {"role": "user", "content": prompt}
-            ],
-            "max_tokens": 512,
-            "temperature": 0.3
-        }
-        
+        curriculum_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'project_curriculum.json')
+        if not os.path.exists(curriculum_path):
+            return Response({"error": "Curriculum data not found. Please run the generation script."}, status=500)
+            
         try:
-            nim_url = "https://integrate.api.nvidia.com/v1/chat/completions"
-            resp = requests.post(nim_url, headers=headers, json=payload, timeout=25)
-            resp.raise_for_status()
-            
-            data = resp.json()
-            content = data["choices"][0]["message"]["content"]
-            
-            import json_repair
-            try:
-                clean_content = content.strip()
-                start = clean_content.find('{')
-                end = clean_content.rfind('}')
-                if start != -1 and end != -1:
-                    clean_content = clean_content[start:end+1]
-                parsed = json_repair.loads(clean_content)
-                return Response(parsed)
-            except Exception as e:
-                return Response({"error": "Failed to parse challenge result.", "raw": content}, status=500)
+            with open(curriculum_path, 'r') as f:
+                curriculum = json.load(f)
+                
+            if topic_slug in curriculum:
+                return Response(curriculum[topic_slug])
+            else:
+                return Response({
+                    "theory": "This topic is currently under construction.",
+                    "connection": "We are actively building the Golden Master for this section.",
+                    "syntax_explanation": "Please bear with us.",
+                    "challenge": "Please skip to a different topic for now while the curriculum is generated."
+                })
         except Exception as e:
             return Response({"error": str(e)}, status=500)

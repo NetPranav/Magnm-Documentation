@@ -97,6 +97,14 @@ export default function ProjectRunner() {
       setFeedback({ success: data.success, text: data.feedback });
       
       if (data.success) {
+        // Progressive injection: overwrite the file with the perfectly formatted golden code
+        if (data.golden_snippet && data.target_file) {
+          updateProjectCode(data.target_file, data.golden_snippet);
+          if (activeFile === data.target_file) {
+            setCode(data.golden_snippet);
+          }
+        }
+        
         setTimeout(() => {
           markTopicComplete(currentTopic.slug);
         }, 3000); // Wait 3 seconds so they can read the success message before moving to next topic

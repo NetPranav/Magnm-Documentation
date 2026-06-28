@@ -1,0 +1,38 @@
+{
+  "0a-what-is-package-json": {
+    "target_file": "package.json",
+    "theory": "The package.json file is a manifest file used to describe the metadata of a Node.js project, including its dependencies, scripts, and other settings. It's a crucial file for managing project dependencies and running scripts. npm (Node Package Manager) is a package manager for Node.js that allows users to easily install and manage dependencies.",
+    "connection": "In our Real-Time Collaborative Text Editor project, we'll use package.json to declare our project's dependencies, including the WebRTC library we'll use for real-time communication. We'll also use npm to install and manage these dependencies.",
+    "syntax_explanation": "In package.json, we'll use the 'dependencies' field to specify our project's dependencies, and the 'scripts' field to define custom scripts for our project.",
+    "code_example": "Here's an example of how to declare a dependency in package.json:\n\n\"dependencies\": {\n  \"webrtc\": \"^1.0.0\"\n}\n",
+    "challenge": "Add the WebRTC library as a dependency in your package.json file and define a custom script to start the server.",
+    "golden_snippet": "\"dependencies\": {\n  \"webrtc\": \"^1.0.0\"\n},\n\"scripts\": {\n  \"start\": \"node server.js\"\n}"
+  },
+  "0b-commonjs-vs-es-modules": {
+    "target_file": "server.js",
+    "theory": "CommonJS (CJS) and ES Modules (ESM) are two different module systems used in Node.js. CJS uses require() and module.exports, while ESM uses import and export. Understanding the difference between them is crucial for building a Real-Time Collaborative Text Editor.",
+    "connection": "In our Real-Time Collaborative Text Editor project, we will use ES Modules (ESM) to import and export functions between the server and client, enabling real-time collaboration and communication between users.",
+    "syntax_explanation": "To use ES Modules, we will use the import statement to import functions and variables, and the export statement to export them.",
+    "code_example": "import { createServer } from 'http';\nconst server = createServer((req, res) => {\n  res.writeHead(200);\n  res.end('Hello World!\n');\n});\nserver.listen(3000, () => {\n  console.log('Server running on port 3000');\n});",
+    "challenge": "Write a function in server.js that exports a greeting message based on the current time.",
+    "golden_snippet": "import { createServer } from 'http';\nconst server = createServer((req, res) => {\n  const currentTime = new Date().toLocaleTimeString();\n  res.writeHead(200);\n  res.end(`Hello World! (Current Time: ${currentTime})\n`);\n});\nserver.listen(3000, () => {\n  console.log('Server running on port 3000');\n});"
+  },
+  "0c-running-scripts": {
+    "target_file": "server.js",
+    "theory": "Running scripts is the process of executing a program or a set of instructions in a Node.js environment. This is typically done using the `node` command in the terminal. By running scripts, we can execute the logic of our Real-Time Collaborative Text Editor.",
+    "connection": "In our Real-Time Collaborative Text Editor project, running scripts will be used to start the server that will handle WebSocket connections and facilitate real-time collaboration between users.",
+    "syntax_explanation": "To run a script, we use the `node` command followed by the path to the script file. For example, `node server.js` will run the `server.js` script.",
+    "code_example": "node server.js\nconst server = http.createServer((req, res) => {\n  res.writeHead(200, {'Content-Type': 'text/plain'});\n  res.end('Hello World\n');\n});\nserver.listen(3000, () => {\n  console.log('Server running at http://localhost:3000/');\n});",
+    "challenge": "Write a script that starts a server listening on port 3000 and logs a message to the console when the server is running.",
+    "golden_snippet": "const http = require('http');\nconst server = http.createServer((req, res) => {\n  res.writeHead(200, {'Content-Type': 'text/plain'});\n  res.end('Server running at http://localhost:3000/');\n});\nserver.listen(3000, () => {\n  console.log('Server running at http://localhost:3000/');\n});"
+  },
+  "0d-basic-http-server": {
+    "target_file": "server.js",
+    "theory": "A Basic HTTP Server is a fundamental component of the web, responsible for serving HTTP requests and responses. It listens on a specific port and handles incoming requests from clients. This is a crucial concept in building a Real-Time Collaborative Text Editor.",
+    "connection": "In our Real-Time Collaborative Text Editor project, we will use a Basic HTTP Server to serve the client-side application, allowing multiple users to connect and collaborate in real-time.",
+    "syntax_explanation": "We will use the `http.createServer()` method to create a new HTTP server, and the `request.on()` method to handle incoming requests.",
+    "code_example": "const http = require('http');\nconst server = http.createServer((request, response) => {\n  response.writeHead(200, {'Content-Type': 'text/plain'});\n  response.end('Hello World\n');\n});\nserver.listen(3000, () => {\n  console.log('Server running at http://localhost:3000/');\n});",
+    "challenge": "Implement a Basic HTTP Server that listens on port 3000 and returns a simple 'Hello World' message to any incoming request.",
+    "golden_snippet": "const http = require('http');\nconst server = http.createServer((request, response) => {\n  response.writeHead(200, {'Content-Type': 'text/plain'});\n  response.end('Hello World\n');\n});\nserver.listen(3000, () => {\n  console.log('Server running at http://localhost:3000/');\n});"
+  }
+}
