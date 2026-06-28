@@ -91,8 +91,10 @@ export default function RootLayout({
             </nav>
 
             {/* Search trigger — visible everywhere now */}
-            <div className="ml-auto flex items-center shrink-0 max-w-[50%] sm:max-w-none">
-              <SearchTrigger />
+            <div className="ml-4 flex-1 flex justify-end sm:ml-auto sm:flex-none items-center shrink-0">
+              <div className="w-full sm:w-auto max-w-md">
+                <SearchTrigger />
+              </div>
             </div>
           </div>
           </header>

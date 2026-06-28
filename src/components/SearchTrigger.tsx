@@ -15,16 +15,18 @@ export default function SearchTrigger() {
   }, [pathname]);
 
   return (
-    <div className="relative flex flex-col items-end">
+    <div className="relative flex flex-col items-end w-full">
       <div 
-        className="flex items-center px-2.5 sm:px-4 py-1.5 sm:py-2 w-full sm:w-80 rounded-xl border border-border text-text-muted text-xs sm:text-sm hover:border-primary/40 hover:text-foreground transition-colors cursor-pointer bg-background shadow-sm hover:shadow-md"
+        className="flex items-center justify-between px-2.5 sm:px-4 py-1.5 sm:py-2 w-full sm:w-80 rounded-xl border border-border text-text-muted text-xs sm:text-sm hover:border-primary/40 hover:text-foreground transition-colors cursor-pointer bg-background shadow-sm hover:shadow-md"
         onClick={() => setSearchOpen(true)}
       >
-        <svg className="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        Search docs or ask AI...
-        <span className="ml-3 text-[10px] border border-border rounded px-1.5 py-0.5 bg-black/[0.02] dark:bg-white/[0.02] font-mono">⌘K</span>
+        <div className="flex items-center overflow-hidden">
+          <svg className="w-3.5 h-3.5 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <span className="truncate">Search docs or ask AI...</span>
+        </div>
+        <span className="ml-3 text-[10px] border border-border rounded px-1.5 py-0.5 bg-black/[0.02] dark:bg-white/[0.02] font-mono shrink-0 hidden sm:inline-block">⌘K</span>
       </div>
 
       {/* Permanent subtle hint pointing up */}
