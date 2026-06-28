@@ -4,12 +4,15 @@ import React from 'react';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { topicsData } from "@/data/topics";
+import { useAI } from '@/context/AIContext';
 
 export default function RightSidebar() {
   const pathname = usePathname();
+  const { completedProjectTopics } = useAI();
 
   // Find the current topic based on pathname
   const isHomepage = pathname === '/';
+  const isProjectMode = pathname === '/project-mode';
   const topic = topicsData.find(t => '/' + t.slug === pathname);
   
   // Calculate reading time safely (avoiding JSON.stringify on React elements)
@@ -64,8 +67,8 @@ export default function RightSidebar() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Reading Time */}
-      {!isHomepage && (
+      {/* Reading Time (Hide on Project Mode) */}
+      {!isHomepage && !isProjectMode && (
         <div className="mb-8 flex items-center text-xs font-medium text-text-muted bg-primary/5 px-3 py-1.5 rounded-lg w-fit border border-primary/10">
           <svg className="w-3.5 h-3.5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -74,20 +77,42 @@ export default function RightSidebar() {
         </div>
       )}
 
-      {/* Table of Contents */}
+      {/* Table of Contents / Progress Tracker */}
       <h4 className="text-[11px] font-semibold text-text-muted mb-4 uppercase tracking-[0.15em]">
-        On this page
+        {isProjectMode ? "Project Progress" : "On this page"}
       </h4>
-      <nav className="flex flex-col space-y-1 mb-10">
-        {tocLinks.map((link, idx) => (
-          <Link
-            key={idx}
-            href={link.href}
-            className="text-[13px] px-3 py-[6px] rounded-lg transition-all duration-200 text-text-muted hover:text-foreground hover:bg-primary/5"
-          >
-            {link.name}
-          </Link>
-        ))}
+      <nav className={`flex flex-col space-y-1 mb-10 ${isProjectMode ? 'overflow-y-auto max-h-[40vh] pr-2 custom-scrollbar' : ''}`}>
+        {isProjectMode ? (
+          topicsData.map((t, idx) => {
+            const isCompleted = completedProjectTopics.includes(t.slug);
+            const isNext = !isCompleted && completedProjectTopics.length === idx;
+            return (
+              <div
+                key={t.id}
+                className={`flex items-center text-[13px] px-2 py-[6px] rounded-lg ${isCompleted ? 'text-green-600 dark:text-green-400 font-medium' : isNext ? 'text-primary font-bold bg-primary/5' : 'text-text-muted'}`}
+              >
+                {isCompleted ? (
+                  <svg className="w-4 h-4 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                ) : isNext ? (
+                  <svg className="w-4 h-4 mr-2 shrink-0 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                ) : (
+                  <div className="w-4 h-4 mr-2 shrink-0 border border-border rounded-full" />
+                )}
+                <span className="truncate">{t.id}. {t.shortTitle}</span>
+              </div>
+            );
+          })
+        ) : (
+          tocLinks.map((link, idx) => (
+            <Link
+              key={idx}
+              href={link.href}
+              className="text-[13px] px-3 py-[6px] rounded-lg transition-all duration-200 text-text-muted hover:text-foreground hover:bg-primary/5"
+            >
+              {link.name}
+            </Link>
+          ))
+        )}
       </nav>
       
       {/* Community Links */}
@@ -115,8 +140,20 @@ export default function RightSidebar() {
         </a>
       </div>
       
+      {/* Learn By Project */}
+      {!isProjectMode && (
+        <div className="mt-auto pt-8 border-t border-border mb-4">
+          <Link href="/project-mode" className="flex items-center justify-center w-full px-4 py-2 bg-primary text-white rounded-lg font-medium shadow-sm hover:bg-primary/90 transition-colors group">
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
+            Learn By Project 🚀
+          </Link>
+        </div>
+      )}
+
       {/* Edit this page */}
-      <div className="mt-auto pt-8 border-t border-border">
+      <div className={`${isProjectMode ? 'mt-auto pt-8' : 'pt-4'} border-t border-border`}>
         <Link href="https://github.com/NetPranav/Magnm-Documentation" target="_blank" rel="noopener noreferrer" className="flex items-center text-[12px] text-text-muted hover:text-foreground transition-colors group">
           <svg className="w-3.5 h-3.5 mr-2 opacity-60 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />

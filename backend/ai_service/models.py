@@ -8,3 +8,9 @@ class UserInjection(models.Model):
 
     class Meta:
         unique_together = ('user_email', 'topic_slug')
+
+class ProjectProgress(models.Model):
+    user_email = models.EmailField(unique=True, db_index=True)
+    completed_topics = models.JSONField(default=list, blank=True)
+    project_codebase = models.JSONField(default=dict, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)

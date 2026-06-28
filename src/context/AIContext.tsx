@@ -30,6 +30,12 @@ interface AIContextType {
   clearInjections: (topicSlug: string) => void;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
+  isProjectMode: boolean;
+  setIsProjectMode: (mode: boolean) => void;
+  completedProjectTopics: string[];
+  markTopicComplete: (topicSlug: string) => void;
+  projectCodebase: Record<string, string>;
+  updateProjectCode: (filename: string, code: string) => void;
 }
 
 const AIContext = createContext<AIContextType | undefined>(undefined);
@@ -39,8 +45,11 @@ export function AIProvider({ children }: { children: ReactNode }) {
   const [isSearchOpen, setSearchOpen] = useState(false);
   const [injections, setInjections] = useState<Record<string, AIInjection[]>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isProjectMode, setIsProjectMode] = useState(false);
+  const [completedProjectTopics, setCompletedProjectTopics] = useState<string[]>([]);
+  const [projectCodebase, setProjectCodebase] = useState<Record<string, string>>({});
 
-  // Load injections
+  // Load injections and project state
   useEffect(() => {
     if (!session?.user) {
       const stored = localStorage.getItem('ai_injections');
@@ -62,8 +71,50 @@ export function AIProvider({ children }: { children: ReactNode }) {
           }
         })
         .catch(err => console.error("Failed to load injections from backend", err));
+        
+      fetch(`${apiUrl}/api/ai/project/load/?email=${session.user.email}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.error) {
+            setCompletedProjectTopics(data.completed_topics || []);
+            setProjectCodebase(data.project_codebase || {});
+          }
+        })
+        .catch(err => console.error("Failed to load project progress from backend", err));
     }
   }, [session]);
+
+  const saveProjectToBackend = (topics: string[], codebase: Record<string, string>) => {
+    if (session?.user) {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://magnm-documentation.onrender.com';
+      fetch(`${apiUrl}/api/ai/project/save/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: session.user.email,
+          completed_topics: topics,
+          project_codebase: codebase
+        })
+      }).catch(err => console.error("Failed to save project to backend", err));
+    }
+  };
+
+  const markTopicComplete = (topicSlug: string) => {
+    setCompletedProjectTopics(prev => {
+      if (prev.includes(topicSlug)) return prev;
+      const next = [...prev, topicSlug];
+      saveProjectToBackend(next, projectCodebase);
+      return next;
+    });
+  };
+
+  const updateProjectCode = (filename: string, code: string) => {
+    setProjectCodebase(prev => {
+      const next = { ...prev, [filename]: code };
+      saveProjectToBackend(completedProjectTopics, next);
+      return next;
+    });
+  };
 
   const saveInjectionsToBackend = (updatedInjections: Record<string, AIInjection[]>, topicSlug: string) => {
     if (!session?.user) {
@@ -120,7 +171,10 @@ export function AIProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AIContext.Provider value={{ isSearchOpen, setSearchOpen, injections, addInjection, undoInjection, clearInjections, isLoading, setIsLoading }}>
+    <AIContext.Provider value={{ 
+      isSearchOpen, setSearchOpen, injections, addInjection, undoInjection, clearInjections, isLoading, setIsLoading,
+      isProjectMode, setIsProjectMode, completedProjectTopics, markTopicComplete, projectCodebase, updateProjectCode
+    }}>
       {children}
     </AIContext.Provider>
   );
