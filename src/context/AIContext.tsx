@@ -9,6 +9,14 @@ export interface AIInjection {
     paragraphIndex: number;
     text: string;
   }[];
+  replacements?: {
+    target: string;
+    text: string;
+  }[];
+  newSections?: {
+    title: string;
+    content: string;
+  }[];
 }
 
 interface AIContextType {

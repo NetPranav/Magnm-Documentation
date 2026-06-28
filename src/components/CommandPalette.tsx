@@ -79,7 +79,11 @@ export default function CommandPalette() {
       const topicContext = {
         title: topic.title,
         description: topic.description,
-        paragraphCount: topic.paragraphs ? topic.paragraphs.length : 0
+        paragraphCount: topic.paragraphs ? topic.paragraphs.length : 0,
+        paragraphs: topic.paragraphs || [],
+        advancedParagraphs: topic.advancedParagraphs || [],
+        basicExample: topic.basicExample || `// Placeholder Basic Example\nconsole.log("This is a placeholder for ${topic.shortTitle}");`,
+        advancedExample: topic.advancedExample || `// Placeholder Real-World Example\n// Our File Sync Engine...\nfunction sync() {\n  console.log("Syncing ${topic.shortTitle}...");\n}`
       };
 
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://magnm-documentation.onrender.com';

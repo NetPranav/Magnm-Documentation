@@ -4,6 +4,7 @@ import React from 'react';
 import SyntaxHoverCode from '@/components/SyntaxHoverCode';
 import Quiz from '@/components/Quiz';
 import Link from 'next/link';
+import TypewriterText from '@/components/TypewriterText';
 import { topicsData } from '@/data/topics';
 import { useAI } from '@/context/AIContext';
 
@@ -118,12 +119,12 @@ function sync() {
               {history.flatMap(inj => inj.inlineExplanations || [])
                 .filter(exp => exp.paragraphIndex === i)
                 .map((exp, j) => (
-                <div key={`exp-${i}-${j}`} className="not-prose my-6 p-5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[14px] text-foreground animate-fade-in-up shadow-sm">
-                  <div className="font-bold text-blue-600 dark:text-blue-400 mb-2 flex items-center uppercase tracking-wider text-xs">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                    Deep Dive
+                <div key={`exp-${i}-${j}`} className="not-prose my-6 font-medium">
+                  <div className="flex items-center text-primary dark:text-primary-light mb-1 uppercase tracking-wider text-[10px] font-bold opacity-80">
+                    <svg className="w-3.5 h-3.5 mr-1.5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    AI Added Content
                   </div>
-                  {exp.text}
+                  <TypewriterText text={exp.text} className="text-[15px] text-primary-dark dark:text-primary-light italic" />
                 </div>
               ))}
             </React.Fragment>
@@ -145,7 +146,20 @@ function sync() {
         </p>
         
         <div className="not-prose my-6">
-          <SyntaxHoverCode code={basicExample} />
+          {(() => {
+            const replacement = history.flatMap(inj => inj.replacements || []).reverse().find(r => r.target === 'basicExample');
+            if (replacement) {
+              return (
+                <div className="relative">
+                  <div className="absolute -top-3 -right-3 z-10 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md animate-bounce">
+                    AI Replaced
+                  </div>
+                  <SyntaxHoverCode code={replacement.text.replace(/```[a-z]*\n?/g, '').replace(/```/g, '')} />
+                </div>
+              );
+            }
+            return <SyntaxHoverCode code={basicExample} />;
+          })()}
         </div>
 
         <h3 id="real-world-example" className="text-2xl mt-12 mb-4">{topic.advancedTitle || "The Real-World Example"}</h3>
@@ -159,7 +173,20 @@ function sync() {
         )}
 
         <div className="not-prose my-6">
-          <SyntaxHoverCode code={advancedExample} />
+          {(() => {
+            const replacement = history.flatMap(inj => inj.replacements || []).reverse().find(r => r.target === 'advancedExample');
+            if (replacement) {
+              return (
+                <div className="relative">
+                  <div className="absolute -top-3 -right-3 z-10 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md animate-bounce">
+                    AI Replaced
+                  </div>
+                  <SyntaxHoverCode code={replacement.text.replace(/```[a-z]*\n?/g, '').replace(/```/g, '')} />
+                </div>
+              );
+            }
+            return <SyntaxHoverCode code={advancedExample} />;
+          })()}
         </div>
 
         {/* Extra Examples (For Massive Core Topics) */}
@@ -175,6 +202,19 @@ function sync() {
               <SyntaxHoverCode code={example.code} />
             </div>
           </React.Fragment>
+        ))}
+
+        {/* AI New Sections */}
+        {history.flatMap(inj => inj.newSections || []).map((sec, idx) => (
+          <div key={`new-sec-${idx}`} className="mt-12 animate-fade-in-up">
+            <h3 className="text-2xl mb-4 text-primary-dark dark:text-primary flex items-center">
+              <svg className="w-5 h-5 mr-2 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              {sec.title}
+            </h3>
+            <div className="text-[15px] text-primary-dark dark:text-primary-light italic leading-[1.8]">
+              <TypewriterText text={sec.content} />
+            </div>
+          </div>
         ))}
 
         {/* Module Capstone Mini-Project */}

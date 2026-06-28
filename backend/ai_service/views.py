@@ -26,12 +26,28 @@ The user is currently reading the topic: "{topic_context.get('title', 'Unknown')
 Here is the context of what they are reading:
 {topic_context.get('description', '')}
 
-Your goal is to explain concepts to the user by returning a strict JSON object (NO markdown wrapping, just raw JSON).
+Paragraphs content:
+{topic_context.get('paragraphs', [])}
+
+Basic Example Code:
+{topic_context.get('basicExample', '')}
+
+Advanced Example Code:
+{topic_context.get('advancedExample', '')}
+
+Your goal is to modify and explain concepts to the user by returning a strict JSON object (NO markdown wrapping, just raw JSON).
 The schema must be EXACTLY:
 {{
   "summary": "A high-level explanation placed at the top of the page.",
   "inlineExplanations": [
-    {{ "paragraphIndex": 0, "text": "Deep dive explanation related to paragraph 1." }}
+    {{ "paragraphIndex": 0, "text": "Deep dive explanation related to paragraph index." }}
+  ],
+  "replacements": [
+    {{ "target": "basicExample", "text": "New code block markdown or complex example to replace the basic example." }},
+    {{ "target": "advancedExample", "text": "New code block markdown to replace the advanced example." }}
+  ],
+  "newSections": [
+    {{ "title": "Line-by-line explanation", "content": "Markdown content explaining the code." }}
   ]
 }}
 """
