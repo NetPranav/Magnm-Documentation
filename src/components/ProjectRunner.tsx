@@ -10,7 +10,7 @@ export default function ProjectRunner() {
   const { completedProjectTopics, markTopicComplete, projectCodebase, updateProjectCode } = useAI();
   
   const [currentTopic, setCurrentTopic] = useState<any>(null);
-  const [challengeInstructions, setChallengeInstructions] = useState<{ theory: string, connection: string, challenge: string } | null>(null);
+  const [challengeInstructions, setChallengeInstructions] = useState<{theory: string, connection: string, code_example?: string, challenge: string} | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [code, setCode] = useState<string>('// Write your collaborative editor code here\n\n');
   const [isEvaluating, setIsEvaluating] = useState(false);
@@ -190,6 +190,19 @@ export default function ProjectRunner() {
                 </div>
               </div>
 
+              {/* Code Example Section */}
+              {challengeInstructions.code_example && (
+                <div>
+                  <h3 className="text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2 flex items-center">
+                    <svg className="w-3.5 h-3.5 mr-1.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                    Code Example
+                  </h3>
+                  <div className="text-[13px] text-blue-300 font-mono leading-relaxed bg-[#1e1e1e] border border-border rounded-lg p-3 whitespace-pre-wrap">
+                    <TypewriterText text={challengeInstructions.code_example} speed={10} delay={1500} />
+                  </div>
+                </div>
+              )}
+
               {/* The Challenge Section */}
               <div>
                 <h3 className="text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2 flex items-center">
@@ -197,7 +210,7 @@ export default function ProjectRunner() {
                   Your Challenge
                 </h3>
                 <div className="text-[13.5px] font-medium text-foreground leading-relaxed bg-primary/5 border border-primary/20 rounded-lg p-4 shadow-inner">
-                  <TypewriterText text={challengeInstructions.challenge} speed={15} delay={2000} />
+                  <TypewriterText text={challengeInstructions.challenge} speed={15} delay={3000} />
                 </div>
               </div>
             </div>
