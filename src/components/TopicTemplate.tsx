@@ -9,7 +9,10 @@ import { topicsData } from '@/data/topics';
 import { useAI } from '@/context/AIContext';
 
 export default function TopicTemplate({ id }: { id: number | string }) {
-  const { injections, undoInjection, clearInjections } = useAI();
+  const { injections, addInjection, undoInjection, clearInjections } = useAI();
+  const [isTLDRMode, setIsTLDRMode] = React.useState(false);
+  const [isGeneratingTLDR, setIsGeneratingTLDR] = React.useState(false);
+  
   const currentIndex = topicsData.findIndex(t => t.id === id);
   const topic = currentIndex !== -1 ? topicsData[currentIndex] : undefined;
   
@@ -30,6 +33,52 @@ console.log("This is a placeholder for ${topic.shortTitle}");`;
 function sync() {
   console.log("Syncing ${topic.shortTitle}...");
 }`;
+
+  const extractText = (node: any): string => {
+    if (typeof node === 'string' || typeof node === 'number') return String(node);
+    if (Array.isArray(node)) return node.map(extractText).join('');
+    if (node && node.props && node.props.children) {
+      return extractText(node.props.children);
+    }
+    return '';
+  };
+
+  const generateTLDR = async () => {
+    if (!topic) return;
+    setIsGeneratingTLDR(true);
+    try {
+      const topicContext = {
+        title: topic.title,
+        description: topic.description,
+        paragraphCount: topic.paragraphs ? topic.paragraphs.length : 0,
+        paragraphs: (topic.paragraphs || []).map(extractText),
+        advancedParagraphs: (topic.advancedParagraphs || []).map(extractText),
+        basicExample,
+        advancedExample
+      };
+
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://magnm-documentation.onrender.com';
+      const res = await fetch(`${apiUrl}/api/ai/generate/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: "Generate a dense, bullet-point TL;DR summary of this entire page.", topicContext }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to generate TLDR');
+      
+      if (data.tldr) {
+        addInjection(topic.slug, data);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to generate TLDR. Please try again.");
+    } finally {
+      setIsGeneratingTLDR(false);
+    }
+  };
+
+  const latestTLDR = history.slice().reverse().find(inj => inj.tldr)?.tldr;
 
   return (
     <div className="flex flex-col pb-24 overflow-x-hidden w-full max-w-full relative">
@@ -81,6 +130,18 @@ function sync() {
         <p className="text-[15px] text-text-secondary max-w-xl leading-[1.8] mb-4">
           {topic.description || `A simple breakdown of ${topic.shortTitle}.`}
         </p>
+
+        {/* TLDR Toggle Switch */}
+        <div className="flex items-center my-6">
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" className="sr-only peer" checked={isTLDRMode} onChange={(e) => setIsTLDRMode(e.target.checked)} />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+            <span className="ml-3 text-sm font-medium text-foreground flex items-center">
+              <svg className="w-4 h-4 mr-1 text-primary animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              AI TL;DR Mode
+            </span>
+          </label>
+        </div>
         
         {/* AI Summary Injections */}
         {history.map((inj, idx) => inj.summary && (
@@ -111,7 +172,40 @@ function sync() {
       {/* Content Section */}
       <section id="content" className="py-8 prose prose-slate max-w-none prose-p:text-[15px] prose-p:text-text-secondary prose-p:leading-[1.8] prose-headings:font-serif prose-headings:font-medium prose-headings:text-foreground prose-a:text-primary-dark prose-a:no-underline hover:prose-a:underline">
         
-        {topic.paragraphs ? (
+        {isTLDRMode ? (
+          <div className="animate-fade-in">
+            {latestTLDR ? (
+              <div className="bg-primary/10 border-l-4 border-primary p-6 rounded-r-lg">
+                <h3 className="text-primary font-bold mb-4 flex items-center">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                  Page TL;DR Summary
+                </h3>
+                <div className="prose prose-sm dark:prose-invert">
+                  <TypewriterText text={latestTLDR} />
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center p-12 bg-black/[0.02] dark:bg-white/[0.02] rounded-xl border border-dashed border-border">
+                <svg className="w-12 h-12 text-primary/50 mb-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                <p className="text-text-muted mb-4 text-center max-w-sm">No TL;DR exists for this page yet. Click below to use AI to read the entire page and generate a dense summary.</p>
+                <button 
+                  onClick={generateTLDR} 
+                  disabled={isGeneratingTLDR}
+                  className="px-4 py-2 bg-primary text-white rounded-lg font-medium shadow-sm hover:bg-primary/90 disabled:opacity-50 transition-colors flex items-center"
+                >
+                  {isGeneratingTLDR ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                      Reading Page...
+                    </>
+                  ) : 'Generate TL;DR'}
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            {topic.paragraphs ? (
           topic.paragraphs.map((p, i) => (
             <React.Fragment key={i}>
               {p}

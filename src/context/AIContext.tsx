@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 
 export interface AIInjection {
   summary?: string;
+  tldr?: string;
   inlineExplanations?: {
     paragraphIndex: number;
     text: string;

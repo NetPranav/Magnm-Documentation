@@ -43,6 +43,7 @@ CRITICAL JSON RULES:
 The schema must be EXACTLY:
 {{
   "summary": "A high-level explanation placed at the top of the page.",
+  "tldr": "A dense, bullet-point TL;DR summary of the entire page if the user specifically requests a TLDR, otherwise null.",
   "inlineExplanations": [
     {{ "paragraphIndex": 0, "text": "Deep dive explanation related to paragraph index." }}
   ],
