@@ -2,7 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 
-export default function TypewriterText({ text, className = '' }: { text: string; className?: string }) {
+export default function TypewriterText({ 
+  text, 
+  className = '',
+  speed = 40,
+  delay = 0
+}: { 
+  text: string; 
+  className?: string;
+  speed?: number;
+  delay?: number;
+}) {
   const [displayedText, setDisplayedText] = useState('');
   
   useEffect(() => {
@@ -11,18 +21,26 @@ export default function TypewriterText({ text, className = '' }: { text: string;
     // Split text into words (preserving spaces)
     const words = text.split(/(\s+)/);
     let currentWordIndex = 0;
+    let interval: NodeJS.Timeout;
     
-    const interval = setInterval(() => {
-      if (currentWordIndex < words.length) {
-        setDisplayedText((prev) => prev + words[currentWordIndex]);
-        currentWordIndex++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 40); // 40ms per word/space gives a nice fast typing effect
+    const startTyping = () => {
+      interval = setInterval(() => {
+        if (currentWordIndex < words.length) {
+          setDisplayedText((prev) => prev + words[currentWordIndex]);
+          currentWordIndex++;
+        } else {
+          clearInterval(interval);
+        }
+      }, speed);
+    };
+
+    const timeout = setTimeout(startTyping, delay);
     
-    return () => clearInterval(interval);
-  }, [text]);
+    return () => {
+      clearTimeout(timeout);
+      if (interval) clearInterval(interval);
+    };
+  }, [text, speed, delay]);
 
   return <span className={className}>{displayedText}</span>;
 }

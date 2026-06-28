@@ -10,7 +10,7 @@ export default function ProjectRunner() {
   const { completedProjectTopics, markTopicComplete, projectCodebase, updateProjectCode } = useAI();
   
   const [currentTopic, setCurrentTopic] = useState<any>(null);
-  const [challengeInstructions, setChallengeInstructions] = useState<string>('');
+  const [challengeInstructions, setChallengeInstructions] = useState<{ theory: string, connection: string, challenge: string } | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [code, setCode] = useState<string>('// Write your collaborative editor code here\n\n');
   const [isEvaluating, setIsEvaluating] = useState(false);
@@ -23,7 +23,8 @@ export default function ProjectRunner() {
     const nextTopic = topicsData.find(t => !completedProjectTopics.includes(t.slug));
     if (nextTopic && (!currentTopic || currentTopic.slug !== nextTopic.slug)) {
       setCurrentTopic(nextTopic);
-      setChallengeInstructions('');
+      setCurrentTopic(nextTopic);
+      setChallengeInstructions(null);
       setFeedback(null);
       setHintText('');
       // Load previous code if they wrote some, or default
@@ -42,28 +43,24 @@ export default function ProjectRunner() {
     setIsGenerating(true);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://magnm-documentation.onrender.com';
-      const prompt = `We are building a Collaborative Real-time Text Editor in Node.js. 
-The current topic the user is learning is: ${topic.title}. 
-First, briefly explain the core theory of this topic in 2-3 sentences. 
-Second, explain exactly how this topic will be used in our Real-time Text Editor project.
-Finally, give the user a specific, implementable coding challenge (1-2 sentences) to write in their editor right now to progress the project.`;
-
-      const res = await fetch(`${apiUrl}/api/ai/generate/`, {
+      const res = await fetch(`${apiUrl}/api/ai/project/challenge/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, topicContext: { title: topic.title, description: topic.description } }),
+        body: JSON.stringify({ 
+          topic_slug: topic.slug,
+          topic_title: topic.title, 
+          topic_description: topic.description 
+        }),
       });
       const data = await res.json();
       
-      // Since GenerateAIView returns our specific schema, we look at the summary
-      if (data.summary) {
-        setChallengeInstructions(data.summary);
+      if (data.theory && data.challenge) {
+        setChallengeInstructions(data);
       } else if (data.error) {
-        setChallengeInstructions(`Error generating challenge: ${data.error}`);
+        console.error(data.error);
       }
     } catch (err) {
       console.error(err);
-      setChallengeInstructions("Failed to load instructions. The AI API might be busy.");
     } finally {
       setIsGenerating(false);
     }
@@ -160,15 +157,48 @@ Finally, give the user a specific, implementable coding challenge (1-2 sentences
           Current Objective: {currentTopic.title}
         </div>
         
-        <div className="prose prose-sm dark:prose-invert flex-1">
+        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
           {isGenerating ? (
             <div className="flex items-center text-text-muted animate-pulse">
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
               AI is preparing your challenge...
             </div>
-          ) : (
-            <TypewriterText text={challengeInstructions} />
-          )}
+          ) : challengeInstructions ? (
+            <div className="space-y-6">
+              {/* Theory Section */}
+              <div>
+                <h3 className="text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2 flex items-center">
+                  <svg className="w-3.5 h-3.5 mr-1.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                  Theory
+                </h3>
+                <div className="text-[13px] text-text-secondary leading-relaxed bg-background/50 border border-border rounded-lg p-3">
+                  <TypewriterText text={challengeInstructions.theory} speed={10} />
+                </div>
+              </div>
+
+              {/* Project Connection Section */}
+              <div>
+                <h3 className="text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2 flex items-center">
+                  <svg className="w-3.5 h-3.5 mr-1.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                  Project Connection
+                </h3>
+                <div className="text-[13px] text-text-secondary leading-relaxed bg-background/50 border border-border rounded-lg p-3">
+                  <TypewriterText text={challengeInstructions.connection} speed={10} delay={1000} />
+                </div>
+              </div>
+
+              {/* The Challenge Section */}
+              <div>
+                <h3 className="text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2 flex items-center">
+                  <svg className="w-3.5 h-3.5 mr-1.5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                  Your Challenge
+                </h3>
+                <div className="text-[13.5px] font-medium text-foreground leading-relaxed bg-primary/5 border border-primary/20 rounded-lg p-4 shadow-inner">
+                  <TypewriterText text={challengeInstructions.challenge} speed={15} delay={2000} />
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
 
         {feedback && (

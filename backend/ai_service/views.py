@@ -278,3 +278,60 @@ Respond in pure JSON with EXACTLY this schema:
                 return Response({"error": "Failed to parse hint result.", "raw": content}, status=500)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+class ProjectChallengeView(APIView):
+    def post(self, request):
+        topic_slug = request.data.get('topic_slug')
+        topic_title = request.data.get('topic_title')
+        topic_desc = request.data.get('topic_description')
+        
+        if not topic_slug:
+            return Response({"error": "topic_slug is required"}, status=400)
+            
+        system_instruction = """You are an expert programming instructor guiding a student through building a Real-time Collaborative Text Editor in Node.js.
+The student is currently learning a specific topic.
+You must provide the instructions for this stage of the project in pure JSON with EXACTLY this schema:
+{
+  "theory": "2-3 sentences explaining the core theory of this topic.",
+  "connection": "2-3 sentences explaining EXACTLY how this topic will be used in our Real-time Text Editor project.",
+  "challenge": "1-2 sentences giving the user a specific, implementable coding challenge to write in their editor right now to progress the project."
+}
+"""
+        prompt = f"Topic: {topic_title}\nDescription: {topic_desc}\nProvide the project challenge instructions."
+        
+        headers = {
+            "Authorization": f"Bearer {settings.NVIDIA_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": "meta/llama-3.1-8b-instruct",
+            "messages": [
+                {"role": "system", "content": system_instruction},
+                {"role": "user", "content": prompt}
+            ],
+            "max_tokens": 512,
+            "temperature": 0.3
+        }
+        
+        try:
+            nim_url = "https://integrate.api.nvidia.com/v1/chat/completions"
+            resp = requests.post(nim_url, headers=headers, json=payload, timeout=25)
+            resp.raise_for_status()
+            
+            data = resp.json()
+            content = data["choices"][0]["message"]["content"]
+            
+            import json_repair
+            try:
+                clean_content = content.strip()
+                start = clean_content.find('{')
+                end = clean_content.rfind('}')
+                if start != -1 and end != -1:
+                    clean_content = clean_content[start:end+1]
+                parsed = json_repair.loads(clean_content)
+                return Response(parsed)
+            except Exception as e:
+                return Response({"error": "Failed to parse challenge result.", "raw": content}, status=500)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)

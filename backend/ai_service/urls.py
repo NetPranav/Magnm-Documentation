@@ -9,4 +9,5 @@ urlpatterns = [
     path('project/load/', views.GetProjectProgressView.as_view(), name='load_project'),
     path('project/evaluate/', views.ProjectEvaluateView.as_view(), name='evaluate_project'),
     path('project/hint/', views.ProjectHintView.as_view(), name='hint_project'),
+    path('project/challenge/', views.ProjectChallengeView.as_view(), name='challenge_project'),
 ]
