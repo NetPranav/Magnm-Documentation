@@ -62,7 +62,7 @@ The schema must be EXACTLY:
         }
         
         payload = {
-            "model": "z-ai/glm-5.1",
+            "model": "meta/llama-3.1-70b-instruct",
             "messages": [
                 {"role": "system", "content": system_instruction},
                 {"role": "user", "content": prompt}
