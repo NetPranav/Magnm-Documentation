@@ -228,10 +228,17 @@ export default function ProjectRunner() {
 
               {/* The Challenge Section */}
               <div>
-                <h3 className="text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2 flex items-center">
-                  <svg className="w-3.5 h-3.5 mr-1.5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                  Your Challenge
-                </h3>
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-[11px] font-bold text-text-muted uppercase tracking-wider flex items-center">
+                    <svg className="w-3.5 h-3.5 mr-1.5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                    Your Challenge
+                  </h3>
+                  {challengeInstructions.target_file && (
+                    <span className="text-[10px] font-mono bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20">
+                      Target File: {challengeInstructions.target_file}
+                    </span>
+                  )}
+                </div>
                 <div className="text-[13.5px] font-medium text-foreground leading-relaxed bg-primary/5 border border-primary/20 rounded-lg p-4 shadow-inner">
                   <TypewriterText text={challengeInstructions.challenge} speed={15} delay={3000} />
                 </div>
