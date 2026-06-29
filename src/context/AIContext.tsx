@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { useSession } from 'next-auth/react';
 
 export interface AIInjection {
@@ -48,6 +48,9 @@ export function AIProvider({ children }: { children: ReactNode }) {
   const [isProjectMode, setIsProjectMode] = useState(false);
   const [completedProjectTopics, setCompletedProjectTopics] = useState<string[]>([]);
   const [projectCodebase, setProjectCodebase] = useState<Record<string, string>>({});
+  
+  const topicsRef = useRef<string[]>([]);
+  const codebaseRef = useRef<Record<string, string>>({});
 
   // Load injections and project state
   useEffect(() => {
@@ -76,8 +79,12 @@ export function AIProvider({ children }: { children: ReactNode }) {
         .then(res => res.json())
         .then(data => {
           if (!data.error) {
-            setCompletedProjectTopics(data.completed_topics || []);
-            setProjectCodebase(data.project_codebase || {});
+            const loadedTopics = data.completed_topics || [];
+            const loadedCodebase = data.project_codebase || {};
+            setCompletedProjectTopics(loadedTopics);
+            setProjectCodebase(loadedCodebase);
+            topicsRef.current = loadedTopics;
+            codebaseRef.current = loadedCodebase;
           }
         })
         .catch(err => console.error("Failed to load project progress from backend", err));
@@ -103,7 +110,8 @@ export function AIProvider({ children }: { children: ReactNode }) {
     setCompletedProjectTopics(prev => {
       if (prev.includes(topicSlug)) return prev;
       const next = [...prev, topicSlug];
-      saveProjectToBackend(next, projectCodebase);
+      topicsRef.current = next;
+      saveProjectToBackend(next, codebaseRef.current);
       return next;
     });
   };
@@ -111,7 +119,8 @@ export function AIProvider({ children }: { children: ReactNode }) {
   const updateProjectCode = (filename: string, code: string) => {
     setProjectCodebase(prev => {
       const next = { ...prev, [filename]: code };
-      saveProjectToBackend(completedProjectTopics, next);
+      codebaseRef.current = next;
+      saveProjectToBackend(topicsRef.current, next);
       return next;
     });
   };
