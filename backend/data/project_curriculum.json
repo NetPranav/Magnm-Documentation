@@ -9,30 +9,120 @@
     "golden_snippet": "{\n  \"dependencies\": {\n    \"webrtc\": \"^1.0.0\"\n  },\n  \"scripts\": {\n    \"start\": \"node server.js\"\n  }\n}"
   },
   "0b-commonjs-vs-es-modules": {
-    "target_file": "server.js",
-    "theory": "CommonJS (CJS) and ES Modules (ESM) are two different module systems used in Node.js. CJS uses require() and module.exports, while ESM uses import and export. Understanding the difference between them is crucial for building a Real-Time Collaborative Text Editor.",
-    "connection": "In our Real-Time Collaborative Text Editor project, we will use ES Modules (ESM) to import and export functions between the server and client, enabling real-time collaboration and communication between users.",
-    "syntax_explanation": "To use ES Modules, we will use the import statement to import functions and variables, and the export statement to export them.",
-    "code_example": "import { createServer } from 'http';\nconst server = createServer((req, res) => {\n  res.writeHead(200);\n  res.end('Hello World!\n');\n});\nserver.listen(3000, () => {\n  console.log('Server running on port 3000');\n});",
-    "challenge": "Write a function in server.js that exports a greeting message based on the current time.",
-    "golden_snippet": "import { createServer } from 'http';\nconst server = createServer((req, res) => {\n  const currentTime = new Date().toLocaleTimeString();\n  res.writeHead(200);\n  res.end(`Hello World! (Current Time: ${currentTime})\n`);\n});\nserver.listen(3000, () => {\n  console.log('Server running on port 3000');\n});"
+    "target_file": "utils.js",
+    "theory": "Node.js historically used CommonJS (require/module.exports) but now supports modern ES Modules (import/export). ESM is the standard for modern JavaScript and is what we will use to organize our code into reusable pieces.",
+    "connection": "In our Collaborative Editor, we need a way to generate unique IDs for every user that connects. We will write a utility function in ESM syntax and export it so our server can use it.",
+    "syntax_explanation": "Use the 'export' keyword before a function or variable to make it available to other files.",
+    "code_example": "export function generateId() {\n  return Math.random().toString(36).substring(2, 9);\n}",
+    "challenge": "In utils.js, create and export a function named 'generateId' that returns a random string. You can use the code example provided.",
+    "golden_snippet": "export function generateId() {\n  return Math.random().toString(36).substring(2, 9);\n}"
   },
   "0c-running-scripts": {
     "target_file": "server.js",
-    "theory": "Running scripts is the process of executing a program or a set of instructions in a Node.js environment. This is typically done using the `node` command in the terminal. By running scripts, we can execute the logic of our Real-Time Collaborative Text Editor.",
-    "connection": "In our Real-Time Collaborative Text Editor project, running scripts will be used to start the server that will handle WebSocket connections and facilitate real-time collaboration between users.",
-    "syntax_explanation": "To run a script, we use the `node` command followed by the path to the script file. For example, `node server.js` will run the `server.js` script.",
-    "code_example": "node server.js\nconst server = http.createServer((req, res) => {\n  res.writeHead(200, {'Content-Type': 'text/plain'});\n  res.end('Hello World\n');\n});\nserver.listen(3000, () => {\n  console.log('Server running at http://localhost:3000/');\n});",
-    "challenge": "Write a script that starts a server listening on port 3000 and logs a message to the console when the server is running.",
-    "golden_snippet": "const http = require('http');\nconst server = http.createServer((req, res) => {\n  res.writeHead(200, {'Content-Type': 'text/plain'});\n  res.end('Server running at http://localhost:3000/');\n});\nserver.listen(3000, () => {\n  console.log('Server running at http://localhost:3000/');\n});"
+    "theory": "To run a Node.js file, you use the 'node' command followed by the filename in your terminal (e.g. 'node server.js'). This executes the JavaScript file within the V8 engine.",
+    "connection": "Our server.js will be the entry point for our real-time editor backend. Let's make sure we can import our utility function and run the file.",
+    "syntax_explanation": "Use the 'import' keyword to bring in functions from other files. Remember to include the '.js' extension when importing local files in Node.js ESM.",
+    "code_example": "import { generateId } from './utils.js';\n\nconsole.log('Server starting... Generated ID:', generateId());",
+    "challenge": "In server.js, import 'generateId' from './utils.js' and console.log it. Note: you must replace the previous boilerplate code entirely.",
+    "golden_snippet": "import { generateId } from './utils.js';\n\nconsole.log('Server starting... Generated ID:', generateId());"
   },
   "0d-basic-http-server": {
     "target_file": "server.js",
-    "theory": "A Basic HTTP Server is a fundamental component of the web, responsible for serving HTTP requests and responses. It listens on a specific port and handles incoming requests from clients. This is a crucial concept in building a Real-Time Collaborative Text Editor.",
-    "connection": "In our Real-Time Collaborative Text Editor project, we will use a Basic HTTP Server to serve the client-side application, allowing multiple users to connect and collaborate in real-time.",
-    "syntax_explanation": "We will use the `http.createServer()` method to create a new HTTP server, and the `request.on()` method to handle incoming requests.",
-    "code_example": "const http = require('http');\nconst server = http.createServer((request, response) => {\n  response.writeHead(200, {'Content-Type': 'text/plain'});\n  response.end('Hello World\n');\n});\nserver.listen(3000, () => {\n  console.log('Server running at http://localhost:3000/');\n});",
-    "challenge": "Implement a Basic HTTP Server that listens on port 3000 and returns a simple 'Hello World' message to any incoming request.",
-    "golden_snippet": "const http = require('http');\nconst server = http.createServer((request, response) => {\n  response.writeHead(200, {'Content-Type': 'text/plain'});\n  response.end('Hello World\n');\n});\nserver.listen(3000, () => {\n  console.log('Server running at http://localhost:3000/');\n});"
+    "theory": "Node.js provides a built-in 'http' module to create web servers. An HTTP server listens for incoming network requests on a specific port and sends back responses.",
+    "connection": "Our collaborative editor needs a server to serve the frontend files and handle WebSocket connections. We will start by creating a basic HTTP server.",
+    "syntax_explanation": "Import 'createServer' from 'http', pass it a callback function handling (req, res), and call .listen(port) on the returned server object.",
+    "code_example": "import { createServer } from 'http';\n\nconst server = createServer((req, res) => {\n  res.writeHead(200);\n  res.end('Server is running!\\n');\n});\n\nserver.listen(3000, () => {\n  console.log('Listening on port 3000');\n});",
+    "challenge": "In server.js, replace your previous code to import 'createServer' from 'http' and start a server on port 3000. Send back 'Hello World' to any request.",
+    "golden_snippet": "import { createServer } from 'http';\n\nconst server = createServer((req, res) => {\n  res.writeHead(200);\n  res.end('Hello World');\n});\n\nserver.listen(3000, () => {\n  console.log('Listening on port 3000');\n});"
+  },
+  "1-what-is-node-js-really": {
+    "target_file": "document.js",
+    "theory": "Node.js allows JavaScript to run outside the browser using the V8 engine and libuv.",
+    "connection": "We need a data structure in memory to represent the state of our text editor before we can send it over the network.",
+    "syntax_explanation": "Use class syntax to define a class, and constructor() to initialize its properties.",
+    "code_example": "export class User {\n  constructor() {\n    this.name = 'Anonymous';\n  }\n}",
+    "challenge": "Create and export a 'CollaborativeDocument' class with a constructor that initializes 'this.content = \"\"' and 'this.clients = new Set()'.",
+    "golden_snippet": "export class CollaborativeDocument {\n  constructor() {\n    this.content = '';\n    this.clients = new Set();\n  }\n}"
+  },
+  "2-the-event-loop-explained": {
+    "target_file": "server.js",
+    "theory": "The event loop processes asynchronous callbacks (like timers) while continuing to execute synchronous code.",
+    "connection": "To ensure our server is running smoothly, we'll add a periodic background task to log the server's health.",
+    "syntax_explanation": "setInterval takes a callback function and a delay in milliseconds, executing the callback repeatedly.",
+    "code_example": "setInterval(() => {\n  console.log('Tick!');\n}, 1000);",
+    "challenge": "Add a setInterval that logs 'Server health check...' to the console every 10,000 milliseconds.",
+    "golden_snippet": "import { createServer } from 'http';\n\nconst server = createServer((req, res) => {\n  res.writeHead(200);\n  res.end('Hello World');\n});\n\nsetInterval(() => {\n  console.log('Server health check...');\n}, 10000);\n\nserver.listen(3000, () => {\n  console.log('Listening on port 3000');\n});"
+  },
+  "3-process-nexttick": {
+    "target_file": "server.js",
+    "theory": "process.nextTick defers execution to the very beginning of the next event loop iteration, prioritizing it over other async tasks.",
+    "connection": "We want to log a startup message immediately after the server begins listening, but guarantee that the synchronous execution finishes first.",
+    "syntax_explanation": "process.nextTick takes a callback that will be invoked immediately after the current operation completes.",
+    "code_example": "process.nextTick(() => {\n  console.log('Executing on next tick');\n});",
+    "challenge": "Inside your server.listen callback, use process.nextTick() to log 'Document system initialized'.",
+    "golden_snippet": "import { createServer } from 'http';\n\nconst server = createServer((req, res) => {\n  res.writeHead(200);\n  res.end('Hello World');\n});\n\nsetInterval(() => {\n  console.log('Server health check...');\n}, 10000);\n\nserver.listen(3000, () => {\n  console.log('Listening on port 3000');\n  process.nextTick(() => {\n    console.log('Document system initialized');\n  });\n});"
+  },
+  "4-memory-management-garbage-collection": {
+    "target_file": "document.js",
+    "theory": "V8 manages memory automatically, but retaining references to objects you no longer need will cause memory leaks.",
+    "connection": "When users disconnect from our editor, we must explicitly remove them from the clients Set to avoid leaking memory.",
+    "syntax_explanation": "Use the .add(value) and .delete(value) methods on a Set instance to modify its contents.",
+    "code_example": "const mySet = new Set();\nmySet.add('Alice');\nmySet.delete('Alice');",
+    "challenge": "Add addClient(id) and removeClient(id) methods to CollaborativeDocument. removeClient must call this.clients.delete(id).",
+    "golden_snippet": "export class CollaborativeDocument {\n  constructor() {\n    this.content = '';\n    this.clients = new Set();\n  }\n\n  addClient(id) {\n    this.clients.add(id);\n  }\n\n  removeClient(id) {\n    this.clients.delete(id);\n  }\n}"
+  },
+  "5-the-process-object": {
+    "target_file": "server.js",
+    "theory": "The process object provides information about the current Node.js environment, including environment variables via process.env.",
+    "connection": "Hardcoding port 3000 is bad practice for deployment. We should allow the host environment to specify the port.",
+    "syntax_explanation": "Access environment variables on the process.env object, and use the logical OR (||) operator for fallbacks.",
+    "code_example": "const port = process.env.PORT || 8080;",
+    "challenge": "Update your .listen call to use process.env.PORT || 3000 instead of a hardcoded 3000.",
+    "golden_snippet": "import { createServer } from 'http';\n\nconst server = createServer((req, res) => {\n  res.writeHead(200);\n  res.end('Hello World');\n});\n\nsetInterval(() => {\n  console.log('Server health check...');\n}, 10000);\n\nconst PORT = process.env.PORT || 3000;\nserver.listen(PORT, () => {\n  console.log(`Listening on port ${PORT}`);\n  process.nextTick(() => {\n    console.log('Document system initialized');\n  });\n});"
+  },
+  "6-asynchronous-patterns": {
+    "target_file": "document.js",
+    "theory": "Modern JavaScript uses async/await and Promises to handle non-blocking code cleanly compared to nested callbacks.",
+    "connection": "We will eventually save our document state to a database or file. Let's start by scaffolding an asynchronous save method.",
+    "syntax_explanation": "Use the 'async' keyword before a method name, and return a new Promise.",
+    "code_example": "async doWork() {\n  return new Promise((resolve) => setTimeout(() => resolve(true), 1000));\n}",
+    "challenge": "Add an 'async save()' method to CollaborativeDocument that returns a Promise resolving to true after a setTimeout of 500ms.",
+    "golden_snippet": "export class CollaborativeDocument {\n  constructor() {\n    this.content = '';\n    this.clients = new Set();\n  }\n\n  addClient(id) {\n    this.clients.add(id);\n  }\n\n  removeClient(id) {\n    this.clients.delete(id);\n  }\n\n  async save() {\n    return new Promise((resolve) => {\n      setTimeout(() => {\n        resolve(true);\n      }, 500);\n    });\n  }\n}"
+  },
+  "7-the-path-module": {
+    "target_file": "utils.js",
+    "theory": "The path module provides utilities for working with file and directory paths across different operating systems.",
+    "connection": "We need to determine exactly where to save our document files on disk safely.",
+    "syntax_explanation": "Use path.join() to concatenate strings into a valid file path for the current OS.",
+    "code_example": "import path from 'path';\nconst fullPath = path.join(process.cwd(), 'logs', 'error.log');",
+    "challenge": "Import the 'path' module. Export a function 'getDocumentPath(filename)' that uses path.join to combine process.cwd(), 'data', and the filename.",
+    "golden_snippet": "import path from 'path';\n\nexport function generateId() {\n  return Math.random().toString(36).substring(2, 9);\n}\n\nexport function getDocumentPath(filename) {\n  return path.join(process.cwd(), 'data', filename);\n}"
+  },
+  "8-fs-readfilesync-vs-fs-readfile": {
+    "target_file": "server.js",
+    "theory": "Synchronous I/O blocks the event loop, while asynchronous I/O does not. Synchronous is mostly used for startup configuration.",
+    "connection": "When our server starts, it should synchronously attempt to load a startup config file before accepting connections.",
+    "syntax_explanation": "readFileSync(path, 'utf8') returns the file contents synchronously. Wrap it in a try-catch to handle errors if the file is missing.",
+    "code_example": "import { readFileSync } from 'fs';\ntry {\n  const data = readFileSync('./config.json', 'utf8');\n} catch (err) {\n  console.log('Error reading config');\n}",
+    "challenge": "Import readFileSync from 'fs'. Above your server definition, write a try-catch block that attempts to read 'config.json' (use 'utf8'), logging 'No config found' if it fails.",
+    "golden_snippet": "import { createServer } from 'http';\nimport { readFileSync } from 'fs';\n\ntry {\n  const config = readFileSync('config.json', 'utf8');\n} catch (err) {\n  console.log('No config found');\n}\n\nconst server = createServer((req, res) => {\n  res.writeHead(200);\n  res.end('Hello World');\n});\n\nsetInterval(() => {\n  console.log('Server health check...');\n}, 10000);\n\nconst PORT = process.env.PORT || 3000;\nserver.listen(PORT, () => {\n  console.log(`Listening on port ${PORT}`);\n  process.nextTick(() => {\n    console.log('Document system initialized');\n  });\n});"
+  },
+  "9-the-fs-promises-api": {
+    "target_file": "document.js",
+    "theory": "The fs/promises API allows you to perform file system operations using async/await without blocking the event loop.",
+    "connection": "Let's replace our mock save method with actual file I/O to persist the collaborative text to disk.",
+    "syntax_explanation": "Import functions like writeFile from 'fs/promises', and use 'await' to wait for their completion.",
+    "code_example": "import { writeFile } from 'fs/promises';\n\nasync function saveLog(data) {\n  await writeFile('log.txt', data, 'utf8');\n}",
+    "challenge": "Import writeFile from 'fs/promises'. Update your save(filename) method (remove setTimeout) to 'await writeFile(filename, this.content, \"utf8\")'.",
+    "golden_snippet": "import { writeFile } from 'fs/promises';\n\nexport class CollaborativeDocument {\n  constructor() {\n    this.content = '';\n    this.clients = new Set();\n  }\n\n  addClient(id) {\n    this.clients.add(id);\n  }\n\n  removeClient(id) {\n    this.clients.delete(id);\n  }\n\n  async save(filename) {\n    await writeFile(filename, this.content, 'utf8');\n    return true;\n  }\n}"
+  },
+  "10-watching-files-and-directories-for-changes": {
+    "target_file": "server.js",
+    "theory": "fs.watch allows your application to listen to operating system events regarding file modifications.",
+    "connection": "If our config.json changes on disk while the server is running, we can log a warning without needing to restart the server.",
+    "syntax_explanation": "watch(path, callback) executes the callback with an event type ('rename', 'change') and the filename when something changes.",
+    "code_example": "import { watch } from 'fs';\n\nwatch('.', (eventType, filename) => {\n  console.log(filename, 'changed');\n});",
+    "challenge": "Import watch from 'fs'. Call watch('.') and provide a callback (eventType, filename) => { console.log('File changed:', filename); }.",
+    "golden_snippet": "import { createServer } from 'http';\nimport { readFileSync, watch } from 'fs';\n\ntry {\n  const config = readFileSync('config.json', 'utf8');\n} catch (err) {\n  console.log('No config found');\n}\n\nwatch('.', (eventType, filename) => {\n  console.log('File changed:', filename);\n});\n\nconst server = createServer((req, res) => {\n  res.writeHead(200);\n  res.end('Hello World');\n});\n\nsetInterval(() => {\n  console.log('Server health check...');\n}, 10000);\n\nconst PORT = process.env.PORT || 3000;\nserver.listen(PORT, () => {\n  console.log(`Listening on port ${PORT}`);\n  process.nextTick(() => {\n    console.log('Document system initialized');\n  });\n});"
   }
 }
