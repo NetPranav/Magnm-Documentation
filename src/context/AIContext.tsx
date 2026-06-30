@@ -30,8 +30,6 @@ interface AIContextType {
   clearInjections: (topicSlug: string) => void;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
-  isProjectMode: boolean;
-  setIsProjectMode: (mode: boolean) => void;
   completedProjectTopics: string[];
   markTopicComplete: (topicSlug: string) => void;
   projectCodebase: Record<string, string>;
@@ -45,7 +43,6 @@ export function AIProvider({ children }: { children: ReactNode }) {
   const [isSearchOpen, setSearchOpen] = useState(false);
   const [injections, setInjections] = useState<Record<string, AIInjection[]>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [isProjectMode, setIsProjectMode] = useState(false);
   const [completedProjectTopics, setCompletedProjectTopics] = useState<string[]>([]);
   const [projectCodebase, setProjectCodebase] = useState<Record<string, string>>({});
   
@@ -182,7 +179,7 @@ export function AIProvider({ children }: { children: ReactNode }) {
   return (
     <AIContext.Provider value={{ 
       isSearchOpen, setSearchOpen, injections, addInjection, undoInjection, clearInjections, isLoading, setIsLoading,
-      isProjectMode, setIsProjectMode, completedProjectTopics, markTopicComplete, projectCodebase, updateProjectCode
+      completedProjectTopics, markTopicComplete, projectCodebase, updateProjectCode
     }}>
       {children}
     </AIContext.Provider>

@@ -6,7 +6,8 @@ import { topicsData } from '@/data/topics';
 import { usePathname, useRouter } from 'next/navigation';
 
 export default function CommandPalette() {
-  const { isSearchOpen, setSearchOpen, addInjection, isLoading, setIsLoading, isProjectMode, setIsProjectMode } = useAI();
+  const { isSearchOpen, setSearchOpen, addInjection, isLoading, setIsLoading } = useAI();
+  const pathname = usePathname();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -59,6 +60,7 @@ export default function CommandPalette() {
       ).slice(0, 5);
 
   const hasAIAction = query.trim().length > 0;
+  const isProjectMode = pathname === '/project-mode';
   const showProjectMode = !isProjectMode && (query.trim() === '' || query.toLowerCase().includes('project'));
   const totalOptions = filteredTopics.length + (hasAIAction ? 1 : 0) + (showProjectMode ? 1 : 0);
 
@@ -125,7 +127,7 @@ export default function CommandPalette() {
     if (hasAIAction && selectedIndex === 0) {
       handleAskAI();
     } else if (showProjectMode && selectedIndex === (hasAIAction ? 1 : 0)) {
-      setIsProjectMode(true);
+      router.push('/project-mode');
       setSearchOpen(false);
     } else {
       const topicIndex = selectedIndex - (hasAIAction ? 1 : 0) - (showProjectMode ? 1 : 0);
@@ -220,7 +222,7 @@ export default function CommandPalette() {
               <div 
                 className={`px-6 py-4 cursor-pointer flex items-center ${selectedIndex === (hasAIAction ? 1 : 0) ? 'bg-green-500/10 border-l-4 border-green-500' : 'hover:bg-black/[0.02] border-l-4 border-transparent'}`}
                 onClick={() => {
-                  setIsProjectMode(true);
+                  router.push('/project-mode');
                   setSearchOpen(false);
                 }}
                 onMouseEnter={() => setSelectedIndex(hasAIAction ? 1 : 0)}
