@@ -10,7 +10,7 @@ export default function ProjectRunner() {
   const { completedProjectTopics, markTopicComplete, projectCodebase, updateProjectCode } = useAI();
   
   const [currentTopic, setCurrentTopic] = useState<any>(null);
-  const [challengeInstructions, setChallengeInstructions] = useState<{theory: string, connection: string, syntax_explanation?: string, code_example?: string, challenge: string} | null>(null);
+  const [challengeInstructions, setChallengeInstructions] = useState<{theory: string, connection: string, syntax_explanation?: string, code_example?: string, challenge: string, target_file?: string} | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [code, setCode] = useState<string>('// Write your collaborative editor code here\n\n');
   const [isEvaluating, setIsEvaluating] = useState(false);
