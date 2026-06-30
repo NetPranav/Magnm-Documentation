@@ -19,6 +19,8 @@ export default function ProjectRunner() {
   const [isHinting, setIsHinting] = useState(false);
   const [hintText, setHintText] = useState<string>('');
   const [mobileTab, setMobileTab] = useState<'theory' | 'code'>('theory');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isChallengePopupOpen, setIsChallengePopupOpen] = useState(false);
 
   // Determine current topic based on progress
   useEffect(() => {
@@ -281,7 +283,7 @@ export default function ProjectRunner() {
       </div>
 
       {/* Right Panel: Monaco Editor */}
-      <div className={`w-full lg:w-3/5 flex-col bg-[#1e1e1e] ${mobileTab === 'theory' ? 'hidden lg:flex' : 'flex'} flex-1 lg:flex-none h-full`}>
+      <div className={`${isFullscreen ? 'fixed inset-0 z-50' : 'w-full lg:w-3/5'} flex-col bg-[#1e1e1e] ${!isFullscreen && mobileTab === 'theory' ? 'hidden lg:flex' : 'flex'} flex-1 lg:flex-none h-full`}>
         <div className="h-10 bg-[#2d2d2d] border-b border-black/50 flex items-center px-4 overflow-x-auto custom-scrollbar shrink-0">
           <div className="flex space-x-2 mr-6 shrink-0">
             <div className="w-3 h-3 rounded-full bg-red-500"></div>
@@ -308,6 +310,20 @@ export default function ProjectRunner() {
               </button>
             ))}
           </div>
+          <div className="flex-1" />
+          <button 
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="text-gray-400 hover:text-gray-200 transition-colors ml-4 shrink-0"
+            title="Toggle Fullscreen"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isFullscreen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              )}
+            </svg>
+          </button>
         </div>
         
         <div className="flex-1 relative">
@@ -326,12 +342,35 @@ export default function ProjectRunner() {
           />
         </div>
 
-        <div className="p-4 bg-[#2d2d2d] border-t border-black/50 flex justify-end space-x-3">
-          <button
-            onClick={handleGetHint}
-            disabled={isEvaluating || isGenerating || isHinting || !code.trim()}
-            className="px-4 py-2 bg-[#3d3d3d] hover:bg-[#4d4d4d] text-gray-200 text-sm font-medium rounded-lg shadow-sm transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+        <div className="p-4 bg-[#2d2d2d] border-t border-black/50 flex justify-between items-center space-x-3">
+          {/* Left side actions (Fullscreen mode) */}
+          <div className="flex space-x-3">
+            {isFullscreen && (
+              <>
+                <button
+                  onClick={() => setIsChallengePopupOpen(true)}
+                  className="px-4 py-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 text-sm font-medium rounded-lg shadow-sm transition-colors flex items-center border border-blue-500/30"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> 
+                  View Challenge
+                </button>
+                <button
+                  onClick={() => setIsFullscreen(false)}
+                  className="px-4 py-2 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 text-sm font-medium rounded-lg shadow-sm transition-colors flex items-center border border-gray-600/50"
+                >
+                  Exit Fullscreen
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Right side actions */}
+          <div className="flex space-x-3">
+            <button
+              onClick={handleGetHint}
+              disabled={isEvaluating || isGenerating || isHinting || !code.trim()}
+              className="px-4 py-2 bg-[#3d3d3d] hover:bg-[#4d4d4d] text-gray-200 text-sm font-medium rounded-lg shadow-sm transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+            >
             {isHinting ? (
               <><svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Thinking...</>
             ) : (
@@ -350,7 +389,26 @@ export default function ProjectRunner() {
               <><svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Submit Code</>
             )}
           </button>
+          </div>
         </div>
+
+        {/* Challenge Popup for Fullscreen mode */}
+        {isChallengePopupOpen && (
+          <div className="fixed inset-0 z-[60] bg-black/60 flex items-center justify-center p-4">
+            <div className="bg-background w-full max-w-lg rounded-xl shadow-2xl p-6 relative border border-border">
+              <button onClick={() => setIsChallengePopupOpen(false)} className="absolute top-4 right-4 text-text-muted hover:text-foreground">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+              <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-4 flex items-center">
+                <svg className="w-4 h-4 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                Your Challenge
+              </h3>
+              <div className="text-[14px] font-medium text-foreground leading-relaxed bg-primary/5 border border-primary/20 rounded-lg p-5 shadow-inner">
+                {challengeInstructions?.challenge}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
