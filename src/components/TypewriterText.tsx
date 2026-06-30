@@ -18,8 +18,8 @@ export default function TypewriterText({
   useEffect(() => {
     setDisplayedText('');
     
-    // Split text into words (preserving spaces)
-    const words = text.split(/(\s+)/);
+    // Split text into words and manually re-attach spaces to avoid regex capturing group bugs in some browsers
+    const words = text.split(' ').map((word, i, arr) => word + (i < arr.length - 1 ? ' ' : ''));
     let currentWordIndex = 0;
     let interval: NodeJS.Timeout;
     
