@@ -6,7 +6,7 @@ import { topicsData } from '@/data/topics';
 import { usePathname, useRouter } from 'next/navigation';
 
 export default function CommandPalette() {
-  const { isSearchOpen, setSearchOpen, addInjection, isLoading, setIsLoading } = useAI();
+  const { isSearchOpen, setSearchOpen, addInjection, isLoading, setIsLoading, isProjectMode, setIsProjectMode } = useAI();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +59,8 @@ export default function CommandPalette() {
       ).slice(0, 5);
 
   const hasAIAction = query.trim().length > 0;
-  const totalOptions = filteredTopics.length + (hasAIAction ? 1 : 0);
+  const showProjectMode = !isProjectMode && (query.trim() === '' || query.toLowerCase().includes('project'));
+  const totalOptions = filteredTopics.length + (hasAIAction ? 1 : 0) + (showProjectMode ? 1 : 0);
 
   // Handle Keyboard Navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -123,8 +124,11 @@ export default function CommandPalette() {
     
     if (hasAIAction && selectedIndex === 0) {
       handleAskAI();
+    } else if (showProjectMode && selectedIndex === (hasAIAction ? 1 : 0)) {
+      setIsProjectMode(true);
+      setSearchOpen(false);
     } else {
-      const topicIndex = hasAIAction ? selectedIndex - 1 : selectedIndex;
+      const topicIndex = selectedIndex - (hasAIAction ? 1 : 0) - (showProjectMode ? 1 : 0);
       const selectedTopic = filteredTopics[topicIndex];
       if (selectedTopic) {
         router.push(`/${selectedTopic.slug}`);
@@ -211,6 +215,26 @@ export default function CommandPalette() {
               </div>
             )}
 
+            {/* Project Mode Item */}
+            {showProjectMode && (
+              <div 
+                className={`px-6 py-4 cursor-pointer flex items-center ${selectedIndex === (hasAIAction ? 1 : 0) ? 'bg-green-500/10 border-l-4 border-green-500' : 'hover:bg-black/[0.02] border-l-4 border-transparent'}`}
+                onClick={() => {
+                  setIsProjectMode(true);
+                  setSearchOpen(false);
+                }}
+                onMouseEnter={() => setSelectedIndex(hasAIAction ? 1 : 0)}
+              >
+                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-green-500/20 text-green-600 mr-4">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                </div>
+                <div>
+                  <p className="text-[14px] font-medium text-foreground">Learn by Project</p>
+                  <p className="text-[12px] text-text-muted">Master Node.js by building a collaborative text editor</p>
+                </div>
+              </div>
+            )}
+
             {filteredTopics.length > 0 && (
               <div className="px-6 pt-4 pb-2 text-xs font-semibold text-text-muted uppercase tracking-wider">
                 {query.trim() === '' ? 'Suggested Topics' : 'Topics'}
@@ -219,7 +243,7 @@ export default function CommandPalette() {
 
             {/* Topic Results */}
             {filteredTopics.map((t, idx) => {
-              const actualIndex = hasAIAction ? idx + 1 : idx;
+              const actualIndex = (hasAIAction ? 1 : 0) + (showProjectMode ? 1 : 0) + idx;
               const isSelected = selectedIndex === actualIndex;
               return (
                 <div
