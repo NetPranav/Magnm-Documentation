@@ -7,7 +7,6 @@ import { usePathname, useRouter } from 'next/navigation';
 
 export default function CommandPalette() {
   const { isSearchOpen, setSearchOpen, addInjection, isLoading, setIsLoading } = useAI();
-  const pathname = usePathname();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
