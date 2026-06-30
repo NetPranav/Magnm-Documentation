@@ -24,7 +24,6 @@ export default function ProjectRunner() {
     const nextTopic = topicsData.find(t => !completedProjectTopics.includes(t.slug));
     if (nextTopic && (!currentTopic || currentTopic.slug !== nextTopic.slug)) {
       setCurrentTopic(nextTopic);
-      setCurrentTopic(nextTopic);
       setChallengeInstructions(null);
       setFeedback(null);
       setHintText('');
@@ -36,10 +35,10 @@ export default function ProjectRunner() {
 
   // Fetch challenge instructions when topic changes
   useEffect(() => {
-    if (currentTopic && !challengeInstructions && !isGenerating) {
+    if (currentTopic) {
       fetchChallenge(currentTopic);
     }
-  }, [currentTopic]);
+  }, [currentTopic?.slug]);
 
   const fetchChallenge = async (topic: any) => {
     setIsGenerating(true);
